@@ -1,48 +1,47 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class PlayerController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float stoppingDistance = 0.1f;
+    [SerializeField] private float stoppingDistance = 0.05f;
 
     private Rigidbody2D rb;
     private Vector2 targetPosition;
     private bool isMoving = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         targetPosition = rb.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Detectar el clic del mouse
         if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
         {
             Vector2 screenPos = Pointer.current.position.ReadValue();
-            Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-            targetPosition = new Vector2(worldPos.x, worldPos.y);
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+            targetPosition = new Vector2(worldPos.x, rb.position.y);
             isMoving = true;
         }
+    }
 
-        //Mover al jugador hacia la posición objetivo
+    void FixedUpdate()
+    {
         if (isMoving)
         {
-            Vector2 direction = (targetPosition - rb.position).normalized;
-            float distance = direction.magnitude;
+            float distance = Vector2.Distance(rb.position, targetPosition);
 
-            //Detener al jugador si está cerca de la posición objetivo
             if (distance <= stoppingDistance)
             {
-                rb.linearVelocity = Vector2.zero;
+                rb.position = targetPosition;
                 isMoving = false;
             }
             else
             {
-                rb.linearVelocity = direction.normalized * moveSpeed;
+                Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
+                rb.MovePosition(newPosition);
             }
         }
     }
