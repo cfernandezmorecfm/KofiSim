@@ -22,8 +22,25 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 screenPos = Pointer.current.position.ReadValue();
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-            targetPosition = new Vector2(worldPos.x, rb.position.y);
-            isMoving = true;
+            Vector2 clickPos = new Vector2(worldPos.x, worldPos.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(clickPos, Vector2.zero);
+
+            if (hit.collider != null)
+            {
+                if (hit.collider.CompareTag("Seat"))
+                {
+                    //Ir a la posición x del taburete, manteniendo la posición y actual del jugador
+                    targetPosition = new Vector2(hit.collider.transform.position.x, rb.position.y);
+                    isMoving = true;
+                }
+                else if (hit.collider.CompareTag("WorkStation"))
+                {
+                    //Ir al centro del workstation de café
+                    targetPosition = new Vector2(hit.collider.transform.position.x, rb.position.y);
+                    isMoving = true;
+                }
+            }
         }
     }
 
