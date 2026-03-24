@@ -5,10 +5,18 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float stoppingDistance = 0.05f;
+    [SerializeField] private float orderTakingSpeed = 3f;
+    [SerializeField] private LayerMask interactableLayer;
 
     private Rigidbody2D rb;
     private Vector2 targetPosition;
     private bool isMoving = false;
+
+    // Creamos las variables de interacción con el cliente
+    private Seat targetSeat;
+    private CustomerFSM currentCustomer;
+    private bool isTakingOrder = false;
+    private float orderTimer = 0f;
 
     void Start()
     {
@@ -18,34 +26,52 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+        HandleInput();
+        HandleOrderTaking();
+    }
+
+    void FixedUpdate()
+    {
+        HandleMovement();
+    }
+
+    private void HandleInput()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector2 screenPos = Pointer.current.position.ReadValue();
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
             Vector2 clickPos = new Vector2(worldPos.x, worldPos.y);
 
-            RaycastHit2D hit = Physics2D.Raycast(clickPos, Vector2.zero);
-
+            RaycastHit2D hit = Physics2D.Raycast(clickPos, Vector2.zero, Mathf.Infinity, interactableLayer);
+            
             if (hit.collider != null)
             {
                 if (hit.collider.CompareTag("Seat"))
                 {
-                    //Ir a la posición x del taburete, manteniendo la posición y actual del jugador
+                    //Si nos movemos mientras tomamos el pedido, se cancela la toma del pedido
+                    CancelCurrentOrder();
+
                     targetPosition = new Vector2(hit.collider.transform.position.x, rb.position.y);
+                    targetSeat = hit.collider.GetComponent<Seat>();
                     isMoving = true;
                 }
                 else if (hit.collider.CompareTag("WorkStation"))
                 {
-                    //Ir al centro del workstation de café
+                    //Si nos movemos mientras tomamos el pedido, se cancela la toma del pedido
+                    CancelCurrentOrder();
+
                     targetPosition = new Vector2(hit.collider.transform.position.x, rb.position.y);
-                    isMoving = true;
+                    targetSeat = null;
+                    isMoving = true;   
                 }
             }
         }
     }
 
-    void FixedUpdate()
+    private void HandleMovement()
     {
+
         if (isMoving)
         {
             float distance = Vector2.Distance(rb.position, targetPosition);
@@ -54,6 +80,9 @@ public class PlayerController : MonoBehaviour
             {
                 rb.position = targetPosition;
                 isMoving = false;
+
+                //Al llegar a un taburete, se empieza a tomar el pedido
+                TryStartOrder();
             }
             else
             {
@@ -62,4 +91,47 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    private void TryStartOrder()
+    {
+        if(targetSeat == null) return;
+        if(!targetSeat.IsOccupied) return; 
+
+        CustomerFSM customer = targetSeat.CurrentCustomer;
+        if (customer != null && customer.CanTakeOrder())
+        {
+            currentCustomer = customer;
+            currentCustomer.StartOrdering();
+            isTakingOrder = true;
+            orderTimer = 0f;
+            Debug.Log("El jugador está tomando el pedido");
+        }
+    }
+
+    private void HandleOrderTaking()
+    {
+        if(!isTakingOrder) return; 
+
+        orderTimer += Time.deltaTime;
+
+        if (orderTimer >= orderTakingSpeed)
+        {
+            currentCustomer.CompleteOrdering();
+            Debug.Log("El jugador ha terminado de tomar el pedido");
+            isTakingOrder = false;
+            currentCustomer = null;
+        }
+    }
+
+    private void CancelCurrentOrder()
+    {
+        if (isTakingOrder && currentCustomer != null)
+        {
+            currentCustomer.CancelOrdering();
+            Debug.Log("El jugador ha cancelado la toma del pedido al moverse");
+        }
+        isTakingOrder = false;
+        currentCustomer = null;
+    }
 }
+

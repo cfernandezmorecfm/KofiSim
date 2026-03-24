@@ -2,132 +2,116 @@ using UnityEngine;
 
 public class CustomerFSM : MonoBehaviour
 {
-    public enum CustomerState
-    {
-        Arriving,
-        WaitingForService,
-        Ordering,
-        WaitingForOrder,
-        Consuming,
-        Leaving
-    }
-
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float patience = 15f;
 
-    private CustomerState currentState = CustomerState.Arriving;
-    private Seat targetSeat;   
-    private float currentPatience;
+    private ICustomerState currentState;
+    private Seat targetSeat;
     private Rigidbody2D rb;
+    private float currentPatience;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Propiedades públicas para que los estados accedan a los datos
+    public float MoveSpeed { get { return moveSpeed; } }
+    public float Patience { get { return patience; } }
+    public float CurrentPatience { get { return currentPatience; } }
+    public Seat TargetSeat { get { return targetSeat; } }
+    public Rigidbody2D Rb { get { return rb; } }
+
+    // Método público para encapsular la reducción de paciencia (lo llama el WaitingForServiceState)
+    public void ReducePatience(float amount)
+    {
+        currentPatience -= amount;
+    }
     void Start()
     {
-        moveSpeed = Random.Range(4f, 7f);
+        moveSpeed = Random.Range(3f, 8f); // Velocidad aleatoria para cada cliente
         rb = GetComponent<Rigidbody2D>();
         currentPatience = patience;
         FindFreeSeat();
-        Debug.Log("Probando el Log del Script del cliente");
+
+        if (targetSeat != null)
+        {
+            ChangeState(new ArrivingState(this));
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        switch (currentState)
+        if (currentState != null)
         {
-            case CustomerState.Arriving:
-                HandleArriving();
-                break;
-            case CustomerState.WaitingForService:
-                HandleWaitingForService();
-                break;
-            case CustomerState.Ordering:
-                HandleOrdering();
-                break;
-            case CustomerState.WaitingForOrder:
-                HandleWaitingForOrder();
-                break;
-            case CustomerState.Consuming:
-                HandleConsuming();
-                break;
-            case CustomerState.Leaving:
-                HandleLeaving();
-                break;
+            currentState.Execute();
         }
+    }
+
+    public void ChangeState(ICustomerState newState)
+    {
+        if (currentState != null)
+        {
+            currentState.Exit();
+        }
+        currentState = newState;
+        currentState.Enter();
     }
 
     private void FindFreeSeat()
     {
-        // Buscar un asiento libre en la escena
         Seat[] allSeats = FindObjectsByType<Seat>(FindObjectsSortMode.None);
-        
+
         foreach (Seat seat in allSeats)
         {
             if (!seat.IsOccupied)
             {
-                Debug.Log("Cliente buscando asiento");
                 targetSeat = seat;
-                targetSeat.Occupy();
+                targetSeat.Occupy(this);
                 return;
             }
         }
-        // Si no hay asientos disponibles, el cliente se va
-        Debug.Log("No hay asientos disponibles, el cliente se va");
+
+        Debug.Log("No hay asientos libres, el cliente se va");
         Destroy(gameObject);
     }
 
-    private void HandleArriving()
+    // Métodos públicos para que los estados puedan interactuar
+    public void FreeSeat()
     {
-        // Creamos la lógica del estado de llegada
-        Vector2 seatPos = new Vector2(targetSeat.Position.x, targetSeat.Position.y);
-        float distance = Vector2.Distance(rb.position, seatPos);    
-
-        if (distance <= 0.05f)
+        if (targetSeat != null)
         {
-            rb.position = seatPos;
-            currentState = CustomerState.WaitingForService;
-            //Agregamos Log para debuggear
-            Debug.Log("Cliente sentado, esperando servicio.");
-        }
-        else
-        {
-            Vector2 newPos = Vector2.MoveTowards(rb.position, seatPos, moveSpeed * Time.deltaTime);
-            rb.MovePosition(newPos);
-        }
-    }
-
-    private void HandleWaitingForService()
-    {
-        // Creamos la lógica del estado de espera por servicio
-
-        currentPatience -= Time.deltaTime;
-
-        if (currentPatience <= 0f)
-        {
-            // El cliente se impacienta y se va, agregamos log para debuggear
-            Debug.Log("Cliente se impacienta y se va");
             targetSeat.Free();
-            Destroy(gameObject);
         }
     }
 
-    private void HandleOrdering()
+    public void DestroySelf()
     {
-        // Lógica para el estado de ordenando, se implementa más adelante
+        Destroy(gameObject);
     }
 
-    private void HandleWaitingForOrder()
+    // Métodos para el sistema de pedidos (los llama el PlayerController)
+    public bool CanTakeOrder()
     {
-        // Lógica para el estado de esperando orden, se implementa más adelante
+        return currentState is WaitingForServiceState;
     }
 
-    private void HandleConsuming()
+    public void StartOrdering()
     {
-        // Lógica para el estado de consumiendo, se implementa más adelante
+        if (currentState is WaitingForServiceState)
+        {
+            ChangeState(new OrderingState(this));
+        }
     }
 
-    private void HandleLeaving()
+    public void CancelOrdering()
     {
-        // Lógica para el estado del cliente yendose, se implementa más adelante
+        if (currentState is OrderingState)
+        {
+            ChangeState(new WaitingForServiceState(this));
+        }
+    }
+
+    public void CompleteOrdering()
+    {
+        if (currentState is OrderingState)
+        {
+            ChangeState(new WaitingForOrderState(this));
+        }
     }
 }
