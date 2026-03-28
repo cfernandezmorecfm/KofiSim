@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     private bool isTakingOrder = false;
     private float orderTimer = 0f;
 
+    // Creamos las variables de interacción con la workstation de café
+    private int carriedCoffees = 0; // Cantidad de café que el jugador está llevando
+    private int maxCoffees = 2; // Cantidad máxima de cafés que el jugador puede llevar
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -83,11 +86,15 @@ public class PlayerController : MonoBehaviour
 
                 //Al llegar a un taburete, se empieza a tomar el pedido
                 TryStartOrder();
+
+                //Al llegar a la workstation de café, si hay un café preparado, se recoge el café
+                TryDeliverCoffee();
             }
             else
             {
                 Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
                 rb.MovePosition(newPosition);
+                TryPickUpCoffee();
             }
         }
     }
@@ -133,5 +140,40 @@ public class PlayerController : MonoBehaviour
         isTakingOrder = false;
         currentCustomer = null;
     }
+
+    private void TryPickUpCoffee()
+    {
+        if (carriedCoffees >= maxCoffees) return;
+
+        Collider2D[] coffees = Physics2D.OverlapCircleAll(rb.position, 1.5f);
+
+        foreach (Collider2D col in coffees)
+        {
+            if (col.CompareTag("Coffee"))
+            {
+                Destroy(col.gameObject);
+                carriedCoffees++;
+                Debug.Log("Jugador: he cogido un café. Llevo: " + carriedCoffees);
+
+                if (carriedCoffees >= maxCoffees) break;
+            }
+        }
+    }
+
+    private void TryDeliverCoffee()
+    {
+        if (carriedCoffees <= 0) return;
+        if (targetSeat == null) return;
+        if (!targetSeat.IsOccupied) return;
+
+        CustomerFSM customer = targetSeat.CurrentCustomer;
+        if (customer != null && customer.CanReceiveCoffee())
+        {
+            customer.ReceiveCoffee();
+            carriedCoffees--;
+            Debug.Log("Jugador: café entregado. Me quedan: " + carriedCoffees);
+        }
+    }
+
 }
 

@@ -9,6 +9,7 @@ public class CustomerFSM : MonoBehaviour
     private Seat targetSeat;
     private Rigidbody2D rb;
     private float currentPatience;
+    private OrderQueue orderQueue; // Referencia al sistema de pedidos para agregar el pedido del cliente
 
     // Propiedades públicas para que los estados accedan a los datos
     public float MoveSpeed { get { return moveSpeed; } }
@@ -33,6 +34,8 @@ public class CustomerFSM : MonoBehaviour
         {
             ChangeState(new ArrivingState(this));
         }
+
+        orderQueue = FindAnyObjectByType<OrderQueue>(); // Encuentra el sistema de pedidos en la escena
     }
 
     void Update()
@@ -111,7 +114,21 @@ public class CustomerFSM : MonoBehaviour
     {
         if (currentState is OrderingState)
         {
+            orderQueue.AddOrder(this); // Agrega el pedido del cliente al sistema de pedidos
             ChangeState(new WaitingForOrderState(this));
+        }
+    }
+
+    public bool CanReceiveCoffee()
+    {
+        return currentState is WaitingForOrderState;
+    }
+
+    public void ReceiveCoffee()
+    {
+        if (currentState is WaitingForOrderState)
+        {
+            ChangeState(new ConsumingState(this));
         }
     }
 }
