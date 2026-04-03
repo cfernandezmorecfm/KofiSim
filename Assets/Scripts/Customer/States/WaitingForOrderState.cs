@@ -11,13 +11,13 @@ public class WaitingForOrderState : ICustomerState
 
     public void Enter()
     {
-        customer.UI.ShowWaitingIcon(true); // Reutilizamos el icono de espera para indicar que el cliente está esperando su pedido
+        customer.UI.ShowWaitingIcon(true); // Mostramos el icono de espera (burbuja de pensamiento)
         Debug.Log("Cliente: esperando mi café");
     }
 
     public void Execute()
     {
-        // Futura implementación, el jugador traerá el café.
+        // Posible futura implementación
     }
 
     public void Exit()
