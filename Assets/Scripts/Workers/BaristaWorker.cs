@@ -5,8 +5,9 @@ public class BaristaWorker : MonoBehaviour
 
     [SerializeField] private float preparationTime = 4f; // Tiempo que tarda el barista en preparar un pedido
     [SerializeField] private OrderQueue orderQueue;
-    [SerializeField] private Transform coffeSpawnPoint;
+    //[SerializeField] private Transform coffeSpawnPoint; Quitamos esta variable porque ahora la posición de creación del café se manejará desde la estación de trabajo
     [SerializeField] private GameObject coffeePrefab;
+    [SerializeField] private WorkStationCoffee workStation;
 
     private bool isPreparing = false;
     private float prepTimer = 0f;
@@ -49,8 +50,10 @@ public class BaristaWorker : MonoBehaviour
     {
         isPreparing = false;
         Debug.Log("Barista ha terminado de preparar el pedido.");
-        // Instanciar el café preparado en la posición del barista
-        Instantiate(coffeePrefab, coffeSpawnPoint.position, Quaternion.identity);
+
+        // Obtenemos la posición de creación del café desde la estación de trabajo
+        Vector2 spawnPos = workStation.GetNextCoffeePosition();
+        Instantiate(coffeePrefab, spawnPos, Quaternion.identity);
 
         currentOrder = null; // El pedido ha sido completado, se libera la referencia
     }

@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 429952144}
   - component: {fileID: 429952147}
   - component: {fileID: 429952145}
+  - component: {fileID: 429952148}
   m_Layer: 3
   m_Name: WorkStation_Coffe
   m_TagString: WorkStation
@@ -257,6 +258,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &429952148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429952143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7295d1b7582184cb296beb003d9524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorkStationCoffee
+  coffeeSpawnPoint: {fileID: 1272571543}
+  coffeeSpacing: 0.5
 --- !u!1 &517355443
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,7 +665,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 5}
+  m_Size: {x: 4, y: 8}
   m_EdgeRadius: 0
 --- !u!114 &838903246
 MonoBehaviour:
@@ -1110,7 +1125,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 5}
+  m_Size: {x: 4, y: 8}
   m_EdgeRadius: 0
 --- !u!114 &1254072623
 MonoBehaviour:
@@ -1375,6 +1390,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 8
+  coffeeStation: {fileID: 429952148}
 --- !u!61 &1469827042
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1797,7 +1813,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 5}
+  m_Size: {x: 4, y: 8}
   m_EdgeRadius: 0
 --- !u!114 &1742457085
 MonoBehaviour:
@@ -2118,8 +2134,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaristaWorker
   preparationTime: 4
   orderQueue: {fileID: 1271731098}
-  coffeSpawnPoint: {fileID: 1272571543}
   coffeePrefab: {fileID: 2570950182069523931, guid: 282fe50cb7ab2ab43b7b422cd217ada3, type: 3}
+  workStation: {fileID: 429952148}
 --- !u!212 &1944605914
 SpriteRenderer:
   serializedVersion: 2
@@ -2385,7 +2401,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 5}
+  m_Size: {x: 4, y: 8}
   m_EdgeRadius: 0
 --- !u!114 &2047009917
 MonoBehaviour:
@@ -2536,7 +2552,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 5}
+  m_Size: {x: 4, y: 8}
   m_EdgeRadius: 0
 --- !u!114 &2099672500
 MonoBehaviour:

@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float stoppingDistance = 0.05f;
     [SerializeField] private float orderTakingSpeed = 3f;
     [SerializeField] private LayerMask interactableLayer;
+    [SerializeField] private WorkStationCoffee coffeeStation;
 
     private Rigidbody2D rb;
     private Vector2 targetPosition;
@@ -84,17 +85,18 @@ public class PlayerController : MonoBehaviour
                 rb.position = targetPosition;
                 isMoving = false;
 
-                //Al llegar a un taburete, se empieza a tomar el pedido
-                TryStartOrder();
+                // Para que no se intente tomar pedido y entregar café al mismo tiempo, se prioriza la entrega de café. Si no se entrega café, entonces se intenta tomar el pedido.
+                if (!TryDeliverCoffee())
+                {
+                    TryStartOrder();
+                }
+                TryPickUpCoffee();
 
-                //Al llegar a la workstation de café, si hay un café preparado, se recoge el café
-                TryDeliverCoffee();
             }
             else
             {
                 Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
                 rb.MovePosition(newPosition);
-                TryPickUpCoffee();
             }
         }
     }
@@ -153,6 +155,7 @@ public class PlayerController : MonoBehaviour
             {
                 Destroy(col.gameObject);
                 carriedCoffees++;
+                coffeeStation.CoffeePickedUp();
                 Debug.Log("Jugador: he cogido un café. Llevo: " + carriedCoffees);
 
                 if (carriedCoffees >= maxCoffees) break;
@@ -160,11 +163,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void TryDeliverCoffee()
+    private bool TryDeliverCoffee()
     {
-        if (carriedCoffees <= 0) return;
-        if (targetSeat == null) return;
-        if (!targetSeat.IsOccupied) return;
+        if (carriedCoffees <= 0) return false;
+        if (targetSeat == null) return false;
+        if (!targetSeat.IsOccupied) return false;
 
         CustomerFSM customer = targetSeat.CurrentCustomer;
         if (customer != null && customer.CanReceiveCoffee())
@@ -172,7 +175,9 @@ public class PlayerController : MonoBehaviour
             customer.ReceiveCoffee();
             carriedCoffees--;
             Debug.Log("Jugador: café entregado. Me quedan: " + carriedCoffees);
+            return true;
         }
+        return false;
     }
 
 }
