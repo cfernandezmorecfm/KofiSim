@@ -11,6 +11,7 @@ public class WaitingForOrderState : ICustomerState
 
     public void Enter()
     {
+        customer.UI.ShowWaitingIcon(true); // Reutilizamos el icono de espera para indicar que el cliente está esperando su pedido
         Debug.Log("Cliente: esperando mi café");
     }
 
@@ -21,6 +22,7 @@ public class WaitingForOrderState : ICustomerState
 
     public void Exit()
     {
+        customer.UI.ShowWaitingIcon(false);
         Debug.Log("Cliente: me traen mi café");
     }
 }

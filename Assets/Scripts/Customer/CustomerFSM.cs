@@ -10,6 +10,7 @@ public class CustomerFSM : MonoBehaviour
     private Rigidbody2D rb;
     private float currentPatience;
     private OrderQueue orderQueue; // Referencia al sistema de pedidos para agregar el pedido del cliente
+    private CustomerUI customerUI; // Referencia al componente de UI para actualizar la barra de paciencia
 
     // Propiedades públicas para que los estados accedan a los datos
     public float MoveSpeed { get { return moveSpeed; } }
@@ -36,6 +37,8 @@ public class CustomerFSM : MonoBehaviour
         }
 
         orderQueue = FindAnyObjectByType<OrderQueue>(); // Encuentra el sistema de pedidos en la escena
+
+        customerUI = GetComponentInChildren<CustomerUI>(); // Encuentra el componente de UI en los hijos del cliente
     }
 
     void Update()
@@ -131,4 +134,6 @@ public class CustomerFSM : MonoBehaviour
             ChangeState(new ConsumingState(this));
         }
     }
+
+    public CustomerUI UI { get { return customerUI; } }
 }
