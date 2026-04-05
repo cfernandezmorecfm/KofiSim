@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 targetPosition;
     private bool isMoving = false;
+    private PlayerUI playerUI;
 
     // Creamos las variables de interacción con el cliente
     private Seat targetSeat;
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private int maxCoffees = 2; // Cantidad máxima de cafés que el jugador puede llevar
     void Start()
     {
+        playerUI = GetComponent<PlayerUI>();
         rb = GetComponent<Rigidbody2D>();
         targetPosition = rb.position;
     }
@@ -155,6 +157,7 @@ public class PlayerController : MonoBehaviour
             {
                 Destroy(col.gameObject);
                 carriedCoffees++;
+                playerUI.UpdateCarriedItems(carriedCoffees); // Actualizamos la UI para mostrar el café que llevamos
                 coffeeStation.CoffeePickedUp();
                 Debug.Log("Jugador: he cogido un café. Llevo: " + carriedCoffees);
 
@@ -174,6 +177,7 @@ public class PlayerController : MonoBehaviour
         {
             customer.ReceiveCoffee();
             carriedCoffees--;
+            playerUI.UpdateCarriedItems(carriedCoffees); // Actualizamos la UI para mostrar el café que llevamos
             Debug.Log("Jugador: café entregado. Me quedan: " + carriedCoffees);
             return true;
         }
