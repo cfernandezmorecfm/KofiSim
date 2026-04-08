@@ -18,6 +18,10 @@ public class ConsumingState : ICustomerState
         Debug.Log("Cliente: estoy bebiendo mi consumición");
     }
 
+    public void FixedExecute()
+    {
+        // No necesitamos hacer nada en FixedUpdate para este estado
+    }
     public void Execute()
     {
         consumeTimer += Time.deltaTime;

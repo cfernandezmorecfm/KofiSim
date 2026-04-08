@@ -33,6 +33,10 @@ public class LeavingState : ICustomerState
 
     public void Execute()
     {
+        // No se ejecutará porque el cliente se mueve en FixedUpdate
+    }
+    public void FixedExecute()
+    {
         float distance = Vector2.Distance(customer.Rb.position, exitPosition);
 
         if (distance <= 0.05f)
@@ -41,7 +45,7 @@ public class LeavingState : ICustomerState
         }
         else
         {
-            Vector2 newPos = Vector2.MoveTowards(customer.Rb.position, exitPosition, customer.MoveSpeed * Time.deltaTime);
+            Vector2 newPos = Vector2.MoveTowards(customer.Rb.position, exitPosition, customer.MoveSpeed * Time.fixedDeltaTime);
             customer.Rb.MovePosition(newPos);
         }
     }

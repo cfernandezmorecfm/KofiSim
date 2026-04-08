@@ -14,7 +14,8 @@ public class ArrivingState : ICustomerState
         Debug.Log("Cliente: caminando hacia mi asiento");
     }
 
-    public void Execute()
+    public void Execute() { }
+    public void FixedExecute()
     {
         Vector2 seatPos = customer.TargetSeat.Position;
         float distance = Vector2.Distance(customer.Rb.position, seatPos);
@@ -26,10 +27,12 @@ public class ArrivingState : ICustomerState
         }
         else
         {
-            Vector2 newPos = Vector2.MoveTowards(customer.Rb.position, seatPos, customer.MoveSpeed * Time.deltaTime);
+            Vector2 newPos = Vector2.MoveTowards(customer.Rb.position, seatPos, customer.MoveSpeed * Time.fixedDeltaTime);
             customer.Rb.MovePosition(newPos);
         }
     }
+
+
 
     public void Exit()
     {

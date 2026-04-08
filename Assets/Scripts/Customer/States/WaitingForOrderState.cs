@@ -15,11 +15,15 @@ public class WaitingForOrderState : ICustomerState
         Debug.Log("Cliente: esperando mi café");
     }
 
+    public void FixedExecute()
+    {
+        // El cliente se queda quieto esperando su pedido, no hay movimiento en esta fase
+    }
     public void Execute()
     {
         // Posible futura implementación
     }
-
+    
     public void Exit()
     {
         customer.UI.ShowWaitingIcon(false);

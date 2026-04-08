@@ -26,7 +26,7 @@ public class CustomerFSM : MonoBehaviour
     }
     void Start()
     {
-        moveSpeed = Random.Range(3f, 8f); // Velocidad aleatoria para cada cliente
+        moveSpeed = Random.Range(1f, 4f); // Velocidad aleatoria para cada cliente
         rb = GetComponent<Rigidbody2D>();
         currentPatience = patience;
         FindFreeSeat();
@@ -46,6 +46,15 @@ public class CustomerFSM : MonoBehaviour
         if (currentState != null)
         {
             currentState.Execute();
+        }
+    }
+
+    //Creamos un método fixedUpdate para controlar el movimiento del cliente y evitar que se mueva a trompicones
+    void FixedUpdate()
+    {
+        if (currentState != null)
+        {
+            currentState.FixedExecute();
         }
     }
 

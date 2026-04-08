@@ -14,6 +14,10 @@ public class OrderingState : ICustomerState
         Debug.Log("Cliente: me están tomando el pedido");
     }
 
+    public void fixedExecute()
+    {
+        // No hay movimiento en este estado, así que no hacemos nada aquí
+    }
     public void Execute()
     {
         // La lógica del timer la gestiona el PlayerController

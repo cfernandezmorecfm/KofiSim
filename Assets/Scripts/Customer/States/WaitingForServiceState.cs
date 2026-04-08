@@ -15,6 +15,10 @@ public class WaitingForServiceState : ICustomerState
         Debug.Log("Cliente: sentado, esperando servicio");
     }
 
+    public void FixedExecute()
+    {
+        // No hay movimiento en este estado, así que no hacemos nada aquí
+    }
     public void Execute()
     {
         customer.ReducePatience(Time.deltaTime);
