@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 7055139801610777843}
   - component: {fileID: 2909323673170046236}
   - component: {fileID: 5585421109644889799}
-  - component: {fileID: 4974369743180257240}
+  - component: {fileID: 2742013708236991435}
   m_Layer: 0
   m_Name: Customer
   m_TagString: Untagged
@@ -458,8 +458,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomerFSM
   moveSpeed: 5
-  patience: 15
---- !u!114 &4974369743180257240
+  patienceForTakeOrder: 15
+  patienceForReceiveOrder: 20
+--- !u!114 &2742013708236991435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -477,6 +478,7 @@ MonoBehaviour:
   consumingIcon: {fileID: 5930268103871389810}
   patienceBarRenderer: {fileID: 4239896136950946924}
   consumingIconRenderer: {fileID: 6462889015516800741}
+  thoughtBubbleRenderer: {fileID: 7447050844977100133}
 --- !u!1 &6420796788211059637
 GameObject:
   m_ObjectHideFlags: 0

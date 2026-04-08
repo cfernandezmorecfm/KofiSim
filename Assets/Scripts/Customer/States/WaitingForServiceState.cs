@@ -11,7 +11,7 @@ public class WaitingForServiceState : ICustomerState
 
     public void Enter()
     {
-        customer.UI.InitializePatience(customer.Patience); // Inicializamos la barra de paciencia con el valor máximo
+        customer.UI.InitializePatience(customer.PatienceForTakeOrder); // Inicializamos la barra de paciencia con el valor máximo
         Debug.Log("Cliente: sentado, esperando servicio");
     }
 

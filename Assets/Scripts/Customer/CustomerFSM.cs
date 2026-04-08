@@ -3,7 +3,8 @@ using UnityEngine;
 public class CustomerFSM : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float patience = 15f;
+    [SerializeField] private float patienceForTakeOrder = 15f; // Tiempo que el cliente está dispuesto a esperar para que le tomen su pedido antes de irse sin pagar
+    [SerializeField] private float patienceForReceiveOrder = 20f; // Tiempo que el cliente está dispuesto a esperar para recibir su pedido antes de irse sin pagar
 
     private ICustomerState currentState;
     private Seat targetSeat;
@@ -13,11 +14,12 @@ public class CustomerFSM : MonoBehaviour
     private CustomerUI customerUI; // Referencia al componente de UI para actualizar la barra de paciencia
 
     // Propiedades públicas para que los estados accedan a los datos
-    public float MoveSpeed { get { return moveSpeed; } }
-    public float Patience { get { return patience; } }
-    public float CurrentPatience { get { return currentPatience; } }
-    public Seat TargetSeat { get { return targetSeat; } }
-    public Rigidbody2D Rb { get { return rb; } }
+    public float MoveSpeed => moveSpeed;
+    public float PatienceForTakeOrder => patienceForTakeOrder;
+    public float PatienceForReceiveOrder => patienceForReceiveOrder;
+    public float CurrentPatience => currentPatience;
+    public Seat TargetSeat => targetSeat;
+    public Rigidbody2D Rb => rb;
 
     // Método público para encapsular la reducción de paciencia (lo llama el WaitingForServiceState)
     public void ReducePatience(float amount)
@@ -28,7 +30,7 @@ public class CustomerFSM : MonoBehaviour
     {
         moveSpeed = Random.Range(1f, 4f); // Velocidad aleatoria para cada cliente
         rb = GetComponent<Rigidbody2D>();
-        currentPatience = patience;
+        currentPatience = patienceForTakeOrder; // Inicialmente el cliente tiene paciencia para esperar a recibir su pedido
         FindFreeSeat();
 
         if (targetSeat != null)
@@ -127,6 +129,7 @@ public class CustomerFSM : MonoBehaviour
         if (currentState is OrderingState)
         {
             orderQueue.AddOrder(this); // Agrega el pedido del cliente al sistema de pedidos
+            currentPatience = patienceForReceiveOrder; // Reinicia la paciencia para esperar el pedido
             ChangeState(new WaitingForOrderState(this));
         }
     }

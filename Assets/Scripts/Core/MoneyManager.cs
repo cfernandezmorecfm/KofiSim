@@ -8,8 +8,10 @@ public class MoneyManager : MonoBehaviour
     // Evento que se dispara cuando el dinero cambia
     // Cualquier script puede suscribirse a este evento para actualizar la UI u otras lógicas relacionadas
     public event Action<float> OnMoneyChanged; // Utilizamos system.Action para simplificar la declaración del evento
-
+    [Header("Dinero inicial")]
     [SerializeField] private float startingMoney = 0f; // Dinero inicial del jugador
+
+    [Header("Precio del café")]
     [SerializeField] private float coffeePrice = 2f; // Dinero que cuesta cada café
 
     private float currentMoney; // Dinero actual del jugador

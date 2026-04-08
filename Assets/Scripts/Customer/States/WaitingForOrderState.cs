@@ -21,7 +21,15 @@ public class WaitingForOrderState : ICustomerState
     }
     public void Execute()
     {
-        // Posible futura implementación
+        customer.ReducePatience(Time.deltaTime);
+        float remaining = customer.CurrentPatience / customer.PatienceForReceiveOrder; // Calculamos el tiempo restante como un valor entre 0 y 1
+        customer.UI.UpdateWaitingForOrderIcon(remaining); // Actualizamos el icono de espera con el tiempo restante
+
+        if (customer.CurrentPatience <= 0f)
+        {
+            Debug.Log("Cliente: No me traen el pedido, me voy sin pagar");
+            customer.ChangeState(new LeavingState(customer, false)); // Cambiamos al estado de salida, pasando false para indicar que el cliente no estaba satisfecho
+        }
     }
     
     public void Exit()

@@ -8,6 +8,7 @@ public class CustomerUI : MonoBehaviour
     [SerializeField] private GameObject consumingIcon;
     [SerializeField] private SpriteRenderer patienceBarRenderer;
     [SerializeField] private SpriteRenderer consumingIconRenderer;
+    [SerializeField] private SpriteRenderer thoughtBubbleRenderer;
 
     private float maxPatience;
     private bool showingPatience = false;
@@ -52,6 +53,13 @@ public class CustomerUI : MonoBehaviour
     public void ShowWaitingIcon(bool show)
     {
         thoughtBubble.SetActive(show);
+               if (show)
+        {
+            // Aseguramos que el icono de consumo esté completamente visible al mostrarlo
+            Color c = consumingIconRenderer.color;
+            c.a = 1f;
+            consumingIconRenderer.color = c;
+        }
     }
 
     public void ShowConsumingIcon(bool show)
@@ -72,6 +80,14 @@ public class CustomerUI : MonoBehaviour
         Color c = consumingIconRenderer.color;
         c.a = Mathf.Clamp01(ratio);
         consumingIconRenderer.color = c;
+    }
+
+    public void UpdateWaitingForOrderIcon(float ratio)
+    {
+        // Modificar la opacidad del icono de espera según el ratio, para dar una sensación de "impaciencia" progresiva
+        Color c = thoughtBubbleRenderer.color;
+        c.a = Mathf.Clamp01(ratio);
+        thoughtBubbleRenderer.GetComponent<SpriteRenderer>().color = c;
     }
 
     public void HideAll()
