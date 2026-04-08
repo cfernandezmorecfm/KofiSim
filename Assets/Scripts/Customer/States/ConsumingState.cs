@@ -27,7 +27,7 @@ public class ConsumingState : ICustomerState
         if (consumeTimer >= consumeTime)
         {
             customer.UI.HideAll(); // Ocultamos la barra de consumo al terminar
-            customer.ChangeState(new LeavingState(customer));
+            customer.ChangeState(new LeavingState(customer, true)); // Cambiamos al estado de salida, pasando true para indicar que el cliente estaba satisfecho
         }
     }
 

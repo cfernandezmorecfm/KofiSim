@@ -4,18 +4,31 @@ public class LeavingState : ICustomerState
 {
     private CustomerFSM customer;
     private Vector2 exitPosition;
+    private bool wasSatisfied; // Variable para almacenar si el cliente estaba satisfecho o no y controlar si nos debe pagar o no
 
-    public LeavingState(CustomerFSM customer)
+    public LeavingState(CustomerFSM customer, bool wasSatisfied) // Pasamos el estado de satisfacción del cliente al constructor para decidir si paga o no
     {
         this.customer = customer;
+        this.wasSatisfied = wasSatisfied;
     }
 
     public void Enter()
     {
         customer.FreeSeat();
+        
+        if(wasSatisfied)
+        {
+            float price = MoneyManager.Instance.CoffeePrice;
+            MoneyManager.Instance.AddMoney(price); // El cliente paga solo si estaba satisfecho
+            Debug.Log($"Cliente: Estoy satisfecho, voy a pagar ${price:F2}");
+        }
+        else
+        {
+            Debug.Log("Cliente: No estoy satisfecho, no voy a pagar");
+        }
+
         // Salir por la izquierda, misma posición que el SpawnPoint
         exitPosition = new Vector2(-10f, customer.Rb.position.y);
-        Debug.Log("Cliente: pagando y yéndome");
     }
 
     public void Execute()

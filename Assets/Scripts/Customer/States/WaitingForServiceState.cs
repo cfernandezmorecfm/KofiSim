@@ -24,7 +24,7 @@ public class WaitingForServiceState : ICustomerState
         {
             Debug.Log("Cliente: me he cansado de esperar, me voy");
             customer.UI.HideAll(); // Ocultamos la barra de paciencia y cualquier otro elemento relacionado
-            customer.ChangeState(new LeavingState(customer));
+            customer.ChangeState(new LeavingState(customer, false)); // Cambiamos al estado de salida, pasando false para indicar que el cliente no estaba satisfecho
         }
     }
 
