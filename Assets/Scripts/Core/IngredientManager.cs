@@ -13,6 +13,7 @@ public class IngredientManager : MonoBehaviour
 
     private float currentCoffeGrams;
 
+    public float StartingCoffeGrams => startingCoffeGrams; // Para poder obtener la cantidad de gramos de café con la que empezamos de la instancia
     public float CurrentCoffeGrams => currentCoffeGrams; // Para poder obtener la cantidad de gramos de café que quedan de la instancia
     public float CoffeGramsPerCup => coffeGramsPerCup; // Para poder obtener la cantidad de gramos de café que se utilizan para una taza de la instancia
 

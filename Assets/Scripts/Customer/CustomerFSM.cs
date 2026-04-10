@@ -13,6 +13,8 @@ public class CustomerFSM : MonoBehaviour
     private OrderQueue orderQueue; // Referencia al sistema de pedidos para agregar el pedido del cliente
     private CustomerUI customerUI; // Referencia al componente de UI para actualizar la barra de paciencia
 
+    public static int ActiveCount { get; private set; } = 0; // Contador estático para llevar la cuenta de los clientes activos en la escena
+
     // Propiedades públicas para que los estados accedan a los datos
     public float MoveSpeed => moveSpeed;
     public float PatienceForTakeOrder => patienceForTakeOrder;
@@ -20,6 +22,18 @@ public class CustomerFSM : MonoBehaviour
     public float CurrentPatience => currentPatience;
     public Seat TargetSeat => targetSeat;
     public Rigidbody2D Rb => rb;
+
+    // Agregamos dos métodos para manejar el contador de clientes activos
+    private void Awake()
+    {
+        ActiveCount++; // Incrementamos el contador cada vez que se crea un nuevo cliente
+    }
+
+    private void OnDestroy()
+    {
+        ActiveCount--; // Decrementamos el contador cada vez que un cliente es destruido
+    }
+
 
     // Método público para encapsular la reducción de paciencia (lo llama el WaitingForServiceState)
     public void ReducePatience(float amount)

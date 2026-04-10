@@ -7,9 +7,15 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private float minSpawnTime = 3f;
     [SerializeField] private float maxSpawnTime = 8f;
 
+    private bool spawnEnabled = true; // Variable para controlar si el spawn está habilitado o no
+
     private float spawnTimer = 0f;
     private float nextSpawnTime;
 
+    public void SetSpawningEnabled(bool isEnabled)
+    {
+        spawnEnabled = isEnabled;
+    }
     void Start()
     {
         //Asigna un tiempo de spawn aleatorio para el primer cliente
@@ -18,6 +24,8 @@ public class CustomerSpawner : MonoBehaviour
 
     void Update()
     {
+        if (!spawnEnabled) return; // Si el spawn no está habilitado, no hacemos nada
+
         // Spawnea clientes a intervalos aleatorios
         spawnTimer += Time.deltaTime;
 

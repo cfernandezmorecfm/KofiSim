@@ -21,6 +21,7 @@ public class LeavingState : ICustomerState
             float price = MoneyManager.Instance.CoffeePrice;
             MoneyManager.Instance.AddMoney(price); // El cliente paga solo si estaba satisfecho
             Debug.Log($"Cliente: Estoy satisfecho, voy a pagar ${price:F2}");
+            DayCycleManager.Instance.AddIncome(price); // Registramos el pago en el DayCycleManager para llevar un conteo de las ganancias del día
         }
         else
         {
