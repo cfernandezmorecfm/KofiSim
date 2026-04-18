@@ -12,6 +12,7 @@ public class ServiceState : IDayCycleState
 
     public void Enter()
     {
+        Time.timeScale = 1f; // Quitamos la pausa del juego para empezar el servicio
         Debug.Log($"Día {manager.CurrentDay} — SERVICIO: empieza el turno");
         manager.ResetDayIncome();
         manager.CustomerSpawner.SetSpawningEnabled(true);

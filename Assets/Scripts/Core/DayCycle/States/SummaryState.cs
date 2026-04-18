@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections; // Para usar IEnumerator y WaitForSeconds
 public class SummaryState : IDayCycleState
 {
     private DayCycleManager manager;
@@ -9,30 +8,23 @@ public class SummaryState : IDayCycleState
     }
     public void Enter()
     {
-        Debug.Log($"Día {manager.CurrentDay}: Resumen del día");
+        Time.timeScale = 0f; // Pausamos el juego para mostrar el resumen
 
         // Pagamos salarios, actualizamos estadísticas, etc.
         float salary = manager.Barista.Salary;
         MoneyManager.Instance.SpendMoney(salary);
 
         float income = manager.DayIncome;
-        float balance = income - salary;
 
-        Debug.Log($"Ingresos: {income}, Salarios: {salary}, Resultado neto: {balance}");
-
-        manager.StartCoroutine(AutoAdvance());
+        // Mostramos el panel de resumen con la información del día
+        SummaryPanelUI.InstanceID.show(manager.CurrentDay, income, salary);
 
     }
 
-    private IEnumerator AutoAdvance()
-    {
-        // Esperamos 5 segundos antes de avanzar automáticamente
-        yield return new WaitForSeconds(5f);
-        manager.ChangeState(new ShoppingState(manager));
-    }
     public void Execute() { }
     public void Exit()
     {
+        SummaryPanelUI.InstanceID.Hide();
         Debug.Log($"Día {manager.CurrentDay} - Fin del balance");
     }
 

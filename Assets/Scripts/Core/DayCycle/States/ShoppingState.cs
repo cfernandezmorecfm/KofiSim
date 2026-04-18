@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class ShoppingState : IDayCycleState
 {     
@@ -11,20 +10,13 @@ public class ShoppingState : IDayCycleState
     public void Enter()
     {
         Debug.Log("Entrando a la tienda.");
-        
-        manager.StartCoroutine(AutoAdvance());
+        ShopPanelUI.Instance.Show(manager.CurrentDay); // Mostramos el panel de la tienda
     }
 
-    private IEnumerator AutoAdvance()
-    {
-        // Esperamos 5 segundos antes de avanzar automáticamente
-        yield return new WaitForSeconds(5f);
-        manager.AdvanceToNextDay();
-        manager.ChangeState(new ServiceState(manager));
-    }
     public void Execute() {}
     public void Exit()
     {
+        ShopPanelUI.Instance.Hide(); // Ocultamos el panel de la tienda al salir del estado
         Debug.Log("Saliendo de la tienda.");
     }
 }

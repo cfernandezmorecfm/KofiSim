@@ -3,8 +3,8 @@ using UnityEngine;
 public class CustomerFSM : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float patienceForTakeOrder = 15f; // Tiempo que el cliente está dispuesto a esperar para que le tomen su pedido antes de irse sin pagar
-    [SerializeField] private float patienceForReceiveOrder = 20f; // Tiempo que el cliente está dispuesto a esperar para recibir su pedido antes de irse sin pagar
+    [SerializeField] private float patienceForTakeOrder = 20f; // Tiempo que el cliente está dispuesto a esperar para que le tomen su pedido antes de irse sin pagar
+    [SerializeField] private float patienceForReceiveOrder = 30f; // Tiempo que el cliente está dispuesto a esperar para recibir su pedido antes de irse sin pagar
 
     private ICustomerState currentState;
     private Seat targetSeat;

@@ -18,7 +18,10 @@ public class DayCycleManager : MonoBehaviour
 
     // Datos económicos del día en curso (para el resumen de final de ciclo)
     private float dayIncome = 0f;
+    private int coffeesSoldToday = 0;
 
+    //Conjuntos de expression-boided properties para exponer datos privados a otras clases sin permitir su modificación directa
+    public int CoffeesSoldToday => coffeesSoldToday; // Para poder obtener la cantidad de cafés vendidos desde la instancia
     public float DayDurationInSeconds => dayDurationInSeconds; // Para poder obtener la duración del día desde la instancia
     public float DayIncome => dayIncome;
     public int CurrentDay => currentDay;
@@ -64,6 +67,7 @@ public class DayCycleManager : MonoBehaviour
     
     public void ResetDayIncome()
         {
+            coffeesSoldToday = 0;
             dayIncome = 0f;
         }
     
@@ -75,5 +79,11 @@ public class DayCycleManager : MonoBehaviour
     public void NotifyTimerChanged(float timeRemaining)
     {
         OnDayTimerChanged?.Invoke(timeRemaining);
+    }
+
+    // Método para incrementar la cantidad de cafés vendidos en el día actual, se llama desde el LeavingState cuando un cliente paga
+    public void IncrementCoffeeSold()
+    {
+        coffeesSoldToday++;
     }
 }

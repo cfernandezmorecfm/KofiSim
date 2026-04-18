@@ -17,6 +17,7 @@ public class MoneyManager : MonoBehaviour
     private float currentMoney; // Dinero actual del jugador
                                
     public float CoffeePrice => coffeePrice; // Propiedad pública para acceder al precio del café desde otros scripts
+    public float CurrentMoney => currentMoney; // Propiedad pública para acceder al dinero actual desde otros scripts
     private void Awake()
     {
         // Implementamos el patrón Singleton para asegurar que solo haya una instancia de MoneyManager
