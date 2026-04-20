@@ -17,6 +17,7 @@ public class BaristaWorker : MonoBehaviour
     private bool isPreparing = false;
     private float prepTimer = 0f;
     private CustomerFSM currentOrder;
+    private int surplusCoffees = 0; // Variable para llevar la cuenta de los cafés sobrantes que se han preparado pero no se han recogido por los clientes, para corregir el bug de cafés sobrantes
     void Start()
     {
 
@@ -44,12 +45,17 @@ public class BaristaWorker : MonoBehaviour
     {
         if (orderQueue.OrderCount == 0) return; // No hay pedidos en la cola, el barista espera
 
-        // Comprobamos si hay suficiente café en stock para preparar el siguiente pedido
-        if (!IngredientManager.Instance.TryUseCoffee(IngredientManager.Instance.CoffeGramsPerCup))
+        // Si hay un café sobrante registrado, lo usamos para preparar el siguiente pedido sin consumir más café del stock, y reducimos la cuenta de cafés sobrantes
+        if (surplusCoffees > 0)
         {
-            // No hay suficiente café para preparar el siguiente pedido
+            surplusCoffees--;
+            orderQueue.GetNextOrder(); // Sacamos el siguiente pedido de la cola pero no lo asignamos a currentOrder porque no necesitamos hacer un seguimiento de él, ya que se prepara con café sobrante
+            Debug.Log("Barista ha usado un café sobrante para preparar un pedido.");
             return;
         }
+
+        // Comprobamos si hay suficiente café en stock para preparar el siguiente pedido
+        if (!IngredientManager.Instance.TryUseCoffee(IngredientManager.Instance.CoffeGramsPerCup)) return;
 
         // Si hay pedidos en la cola y suficiente café, el barista comienza a preparar el siguiente pedido
         currentOrder = orderQueue.GetNextOrder();
@@ -68,6 +74,12 @@ public class BaristaWorker : MonoBehaviour
         Instantiate(coffeePrefab, spawnPos, Quaternion.identity);
 
         currentOrder = null; // El pedido ha sido completado, se libera la referencia
+    }
+
+    public void RegisterSurplusCoffee()
+    {
+        surplusCoffees++;
+        Debug.Log($"Café sobrante registrado. Total de cafés sobrantes: {surplusCoffees}");
     }
 
 }

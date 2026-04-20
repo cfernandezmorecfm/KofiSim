@@ -26,7 +26,7 @@ public class MoneyUI : MonoBehaviour
 
     private void UpdateMoneyUI(float newMoney)
     {
-        currentMoneyText.text = $"${newMoney:F2}";
+        currentMoneyText.text = $"{newMoney:F2} €";
     }
 
 }

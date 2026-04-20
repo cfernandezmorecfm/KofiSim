@@ -3,6 +3,7 @@ using UnityEngine;
 public class WaitingForOrderState : ICustomerState
 {
     private CustomerFSM customer;
+    private BaristaWorker barista; // Referencia al barista
 
     public WaitingForOrderState(CustomerFSM customer)
     {
@@ -11,6 +12,7 @@ public class WaitingForOrderState : ICustomerState
 
     public void Enter()
     {
+        barista = Object.FindAnyObjectByType<BaristaWorker>(); // Encontramos al barista en la escena para poder registrar cafés sobrantes si el cliente se va sin pagar
         customer.UI.ShowWaitingIcon(true); // Mostramos el icono de espera (burbuja de pensamiento)
         Debug.Log("Cliente: esperando mi café");
     }
@@ -28,6 +30,7 @@ public class WaitingForOrderState : ICustomerState
         if (customer.CurrentPatience <= 0f)
         {
             Debug.Log("Cliente: No me traen el pedido, me voy sin pagar");
+            barista.RegisterSurplusCoffee(); // Registramos un café sobrante para el barista, ya que el cliente se va sin pagar
             customer.ChangeState(new LeavingState(customer, false)); // Cambiamos al estado de salida, pasando false para indicar que el cliente no estaba satisfecho
         }
     }

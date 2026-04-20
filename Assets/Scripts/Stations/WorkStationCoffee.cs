@@ -10,13 +10,17 @@ public class WorkStationCoffee : MonoBehaviour
     //Agregamos una variable para llevar la cuenta de cuántos cafés se han creado
     private int coffeesOnCounter = 0;
 
+    // Propiedad pública para acceder a la cantidad de cafés en el mostrador desde otros scripts, como el BaristaWorker para corregir el bug de cafés sobrantes
+    public int CoffeesOnCounter => coffeesOnCounter; 
+
     public Vector2 GetNextCoffeePosition()
     {
+        
         Vector2 pos = new Vector2(
             coffeeSpawnPoint.position.x + (coffeesOnCounter * coffeeSpacing),
             coffeeSpawnPoint.position.y
         );
-        coffeesOnCounter++; 
+        coffeesOnCounter++;
         return pos;
     }
 
@@ -27,4 +31,5 @@ public class WorkStationCoffee : MonoBehaviour
             coffeesOnCounter--;
         }
     }
+
 }
