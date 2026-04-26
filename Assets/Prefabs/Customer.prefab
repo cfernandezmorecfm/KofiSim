@@ -458,8 +458,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomerFSM
   moveSpeed: 5
-  patienceForTakeOrder: 15
-  patienceForReceiveOrder: 20
+  patienceForTakeOrder: 20
+  patienceForReceiveOrder: 30
 --- !u!114 &2742013708236991435
 MonoBehaviour:
   m_ObjectHideFlags: 0
