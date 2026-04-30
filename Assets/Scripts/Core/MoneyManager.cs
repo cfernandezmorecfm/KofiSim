@@ -1,13 +1,9 @@
-using System;
 using UnityEngine;
 
 public class MoneyManager : MonoBehaviour
 {
     public static MoneyManager Instance { get; private set; }
 
-    // Evento que se dispara cuando el dinero cambia
-    // Cualquier script puede suscribirse a este evento para actualizar la UI u otras lógicas relacionadas
-    public event Action<float> OnMoneyChanged; // Utilizamos system.Action para simplificar la declaración del evento
     [Header("Dinero inicial")]
     [SerializeField] private float startingMoney = 0f; // Dinero inicial del jugador
 
@@ -38,14 +34,14 @@ public class MoneyManager : MonoBehaviour
     {
         currentMoney += amount; // Sumamos el monto al dinero actual
         Debug.Log($"Dinero agregado: {amount}. Dinero actual: {currentMoney}"); // Log para verificar el cambio de dinero
-        OnMoneyChanged?.Invoke(currentMoney); // Disparamos el evento para notificar a los suscriptores del cambio
+        EventBus.Publish(new MoneyChangedEvent(currentMoney)); // Publicamos un evento para notificar a los suscriptores del cambio de dinero
     }
 
     public void SpendMoney (float amount)
     {
         currentMoney -= amount;
         Debug.Log($"Dinero gastado: -{amount:F2} | Total: {currentMoney:F2}");
-        OnMoneyChanged?.Invoke(currentMoney); // Disparamos el evento para notificar a los suscriptores del cambio
+        EventBus.Publish(new MoneyChangedEvent(currentMoney)); // Publicamos un evento para notificar a los suscriptores del cambio de dinero
     }
     public float GetMoney()
     {

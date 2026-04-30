@@ -5,28 +5,29 @@ public class MoneyUI : MonoBehaviour
 {
 
     [SerializeField] private TextMeshProUGUI currentMoneyText;
-    void Start()
+
+    private System.Action<MoneyChangedEvent> moneyChangedHandler;
+    private void OnEnable() // Se llama cuando el objeto se activa
     {
-        // Suscribirse al evento de cambio de dinero
-        MoneyManager.Instance.OnMoneyChanged += UpdateMoneyUI;
+        // Guardamos la referencia al handler para garantizar que Subscribe y Unsubscribe utilizan la misma
+        moneyChangedHandler = UpdateMoneyUI; // No ponemos parentesis porque no queremos invocar el método, sino pasar la referencia
 
-        // Actualizar la UI con el dinero inicial
-        UpdateMoneyUI(MoneyManager.Instance.GetMoney());
+        // Suscripción al BUS
+        EventBus.Subscribe(moneyChangedHandler);
 
+        // La UI debe mostrar el saldo correcto desde el primer momento, por lo que inicializamos aquí el update
+        UpdateMoneyUI(new MoneyChangedEvent(MoneyManager.Instance.GetMoney()));
     }
 
-    private void OnDestroy()
+    private void OnDisable() // Se llama cuando el objeto se desactiva
     {
-        // Desuscribirse del evento para evitar errores al destruir el objeto
-        if (MoneyManager.Instance != null)
-        {
-            MoneyManager.Instance.OnMoneyChanged -= UpdateMoneyUI;
-        }
+        // Hacemos Unsuscribe utilizando la misma referencia que en el OnEnable
+        EventBus.Unsubscribe(moneyChangedHandler);
     }
 
-    private void UpdateMoneyUI(float newMoney)
+    private void UpdateMoneyUI(MoneyChangedEvent evt)
     {
-        currentMoneyText.text = $"{newMoney:F2} €";
+        currentMoneyText.text = $"{evt.NewAmount:F2} €";
     }
 
 }
