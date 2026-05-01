@@ -966,6 +966,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorkStationCoffee
   coffeeSpawnPoint: {fileID: 1272571543}
   coffeeSpacing: 0.5
+  coffeePrefab: {fileID: 2570950182069523931, guid: 282fe50cb7ab2ab43b7b422cd217ada3, type: 3}
 --- !u!1 &473229727
 GameObject:
   m_ObjectHideFlags: 0
@@ -5621,7 +5622,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaristaWorker
   preparationTime: 4
   orderQueue: {fileID: 1271731098}
-  coffeePrefab: {fileID: 2570950182069523931, guid: 282fe50cb7ab2ab43b7b422cd217ada3, type: 3}
   workStation: {fileID: 429952148}
   salary: 20
 --- !u!212 &1944605914

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Rendering;
 
 public class SummaryPanelUI : MonoBehaviour
 {
@@ -40,7 +39,7 @@ public class SummaryPanelUI : MonoBehaviour
         salaryText.text = $"Salarios: - {salary:F2} €";
 
         float balance = income - salary;
-        balanceText.text = $"Balance: ${balance:F2} €";
+        balanceText.text = $"Balance: {balance:F2} €";
 
         panelRoot.SetActive(true);
     }

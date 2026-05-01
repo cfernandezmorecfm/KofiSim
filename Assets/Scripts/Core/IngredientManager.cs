@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 public class IngredientManager : MonoBehaviour
 {
@@ -17,8 +16,6 @@ public class IngredientManager : MonoBehaviour
     public float CurrentCoffeGrams => currentCoffeGrams; // Para poder obtener la cantidad de gramos de café que quedan de la instancia
     public float CoffeGramsPerCup => coffeGramsPerCup; // Para poder obtener la cantidad de gramos de café que se utilizan para una taza de la instancia
 
-    public event Action<float> OnCoffeStockChanged;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -27,11 +24,7 @@ public class IngredientManager : MonoBehaviour
             return;
         }
         Instance = this;
-    }
-    private void Start()
-    {
-        currentCoffeGrams = startingCoffeGrams;
-        OnCoffeStockChanged?.Invoke(currentCoffeGrams); // Disparamos el evento para notificar a los suscriptores del cambio
+        currentCoffeGrams = startingCoffeGrams; // Inicialización movida desde Start a Awake para asegurar que el stock de café se establezca correctamente al inicio del juego, incluso si el objeto se reinicia o se carga una nueva escena
     }
 
     public bool HasEnoughCoffee(float grams)
@@ -46,7 +39,7 @@ public class IngredientManager : MonoBehaviour
         // Lo hacemos en un método separado para poder manejar el caso en el que no haya suficiente café y evitar que el barista prepare una taza sin café
         if (!HasEnoughCoffee(grams)) return false;
         currentCoffeGrams -= grams;
-        OnCoffeStockChanged?.Invoke(currentCoffeGrams);
+        EventBus.Publish(new IngredientStockChangedEvent(currentCoffeGrams)); // Publicamos el evento cada vez que se utiliza café para que el UI se actualice con el nuevo stock de café
         return true;
     }
 
@@ -54,6 +47,6 @@ public class IngredientManager : MonoBehaviour
     {
         // Se utilizará en el menú de compra para agregar más café a nuestro stock
         currentCoffeGrams += grams;
-        OnCoffeStockChanged?.Invoke(currentCoffeGrams);
+        EventBus.Publish(new IngredientStockChangedEvent(currentCoffeGrams)); // Publicamos el evento cada vez que se agrega café para que el UI se actualice con el nuevo stock de café
     }
 }

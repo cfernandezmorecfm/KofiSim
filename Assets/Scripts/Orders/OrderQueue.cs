@@ -5,9 +5,29 @@ public class OrderQueue : MonoBehaviour
 {
     private Queue<CustomerFSM> pendingOrders = new Queue<CustomerFSM>(); // Cola FIFO para almacenar los pedidos de los clientes
 
+    private System.Action<CustomerOrderPlacedEvent> customerOrderPlacedHandler;
+
     public int OrderCount { get {  return pendingOrders.Count; } }
 
-    public void AddOrder(CustomerFSM customer)
+    private void OnEnable()
+        {
+        // Suscribirse al evento de pedido realizado por el cliente
+        customerOrderPlacedHandler = OnCustomerOrderPlaced;
+        EventBus.Subscribe(customerOrderPlacedHandler);
+        }
+
+    private void OnDisable()
+    {
+        // Desuscribirse del evento para evitar fugas de memoria
+        EventBus.Unsubscribe(customerOrderPlacedHandler);
+    }
+
+    private void OnCustomerOrderPlaced(CustomerOrderPlacedEvent evt)
+        {
+            // Manejar el evento de pedido realizado por el cliente
+            AddOrder(evt.Customer);
+        }
+    private void AddOrder(CustomerFSM customer) // Al utilizar la suscripción al evento, lo pasamos a privado
     {
         // Guardar el pedido del cliente en la cola, asegurándose de que se mantenga el orden de llegada
         pendingOrders.Enqueue(customer);

@@ -10,7 +10,6 @@ public class CustomerFSM : MonoBehaviour
     private Seat targetSeat;
     private Rigidbody2D rb;
     private float currentPatience;
-    private OrderQueue orderQueue; // Referencia al sistema de pedidos para agregar el pedido del cliente
     private CustomerUI customerUI; // Referencia al componente de UI para actualizar la barra de paciencia
 
     public static int ActiveCount { get; private set; } = 0; // Contador estático para llevar la cuenta de los clientes activos en la escena
@@ -51,8 +50,6 @@ public class CustomerFSM : MonoBehaviour
         {
             ChangeState(new ArrivingState(this));
         }
-
-        orderQueue = FindAnyObjectByType<OrderQueue>(); // Encuentra el sistema de pedidos en la escena
 
         customerUI = GetComponentInChildren<CustomerUI>(); // Encuentra el componente de UI en los hijos del cliente
     }
@@ -142,7 +139,7 @@ public class CustomerFSM : MonoBehaviour
     {
         if (currentState is OrderingState)
         {
-            orderQueue.AddOrder(this); // Agrega el pedido del cliente al sistema de pedidos
+            EventBus.Publish(new CustomerOrderPlacedEvent(this)); // Publica un evento para notificar que el cliente ha hecho su pedido
             currentPatience = patienceForReceiveOrder; // Reinicia la paciencia para esperar el pedido
             ChangeState(new WaitingForOrderState(this));
         }

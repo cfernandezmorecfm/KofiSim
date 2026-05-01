@@ -6,6 +6,7 @@ public class WorkStationCoffee : MonoBehaviour
     //Creamos las variables para establecer la posición de creación de los cafés
     [SerializeField] private Transform coffeeSpawnPoint;
     [SerializeField] private float coffeeSpacing = 0.5f;
+    [SerializeField] private GameObject coffeePrefab; // Prefab de la taza de café que se va a instanciar en el mostrador - lo hemos movido de BaristaWorker
 
     //Agregamos una variable para llevar la cuenta de cuántos cafés se han creado
     private int coffeesOnCounter = 0;
@@ -24,6 +25,11 @@ public class WorkStationCoffee : MonoBehaviour
         return pos;
     }
 
+    public void SpawnCoffee()
+    {
+        Vector2 spawnPos = GetNextCoffeePosition();
+        Instantiate(coffeePrefab, spawnPos, Quaternion.identity);
+    }
     public void CoffeePickedUp()
     {
         if (coffeesOnCounter > 0)

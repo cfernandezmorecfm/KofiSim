@@ -1,0 +1,2 @@
+public readonly struct CustomerServedEvent
+{}
