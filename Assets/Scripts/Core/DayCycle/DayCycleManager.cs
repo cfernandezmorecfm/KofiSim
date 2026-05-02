@@ -18,10 +18,13 @@ public class DayCycleManager : MonoBehaviour
 
     // Datos económicos del día en curso (para el resumen de final de ciclo)
     private float dayIncome = 0f;
-    private int coffeesSoldToday = 0;
+    private int coffeesServedToday = 0;
+
+    private Action<CustomerPaidEvent> customerPaidHandler;
+    private Action<CustomerServedEvent> customerServedHandler;
 
     //Conjuntos de expression-boided properties para exponer datos privados a otras clases sin permitir su modificación directa
-    public int CoffeesSoldToday => coffeesSoldToday; // Para poder obtener la cantidad de cafés vendidos desde la instancia
+    public int CoffeesServedToday => coffeesServedToday; // Para poder obtener la cantidad de cafés servidos desde la instancia
     public float DayDurationInSeconds => dayDurationInSeconds; // Para poder obtener la duración del día desde la instancia
     public float DayIncome => dayIncome;
     public int CurrentDay => currentDay;
@@ -41,6 +44,19 @@ public class DayCycleManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        customerPaidHandler = OnCustomerPaid;
+        customerServedHandler = OnCustomerServed;
+        EventBus.Subscribe(customerPaidHandler);
+        EventBus.Subscribe(customerServedHandler);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(customerPaidHandler);
+        EventBus.Unsubscribe(customerServedHandler);
+    }
     private void Start()
     {
         ChangeState(new ServiceState(this));
@@ -60,6 +76,15 @@ public class DayCycleManager : MonoBehaviour
         currentState?.Enter();
     }
 
+    private void OnCustomerPaid(CustomerPaidEvent evt)
+    {
+        AddIncome(evt.Amount);
+    }
+
+    private void OnCustomerServed(CustomerServedEvent evt)
+    {
+        IncrementCoffeesServed();
+    }
     public void AddIncome(float amount)
         {
             dayIncome += amount;
@@ -67,7 +92,7 @@ public class DayCycleManager : MonoBehaviour
     
     public void ResetDayIncome()
         {
-            coffeesSoldToday = 0;
+            coffeesServedToday = 0;
             dayIncome = 0f;
         }
     
@@ -82,8 +107,8 @@ public class DayCycleManager : MonoBehaviour
     }
 
     // Método para incrementar la cantidad de cafés vendidos en el día actual, se llama desde el LeavingState cuando un cliente paga
-    public void IncrementCoffeeSold()
+    public void IncrementCoffeesServed()
     {
-        coffeesSoldToday++;
+        coffeesServedToday++;
     }
 }

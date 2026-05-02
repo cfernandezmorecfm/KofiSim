@@ -1,11 +1,9 @@
 public readonly struct CustomerPaidEvent
 {
     public float Amount { get; }
-    public bool WasSatisfied { get; }
 
-    public CustomerPaidEvent(float amount, bool wasSatisfied)
+    public CustomerPaidEvent(float amount)
     {
         Amount = amount;
-        WasSatisfied = wasSatisfied;
     }
 }

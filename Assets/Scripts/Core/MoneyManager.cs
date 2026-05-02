@@ -11,7 +11,8 @@ public class MoneyManager : MonoBehaviour
     [SerializeField] private float coffeePrice = 2f; // Dinero que cuesta cada café
 
     private float currentMoney; // Dinero actual del jugador
-                               
+
+    private System.Action<CustomerPaidEvent> customerPaidHandler; 
     public float CoffeePrice => coffeePrice; // Propiedad pública para acceder al precio del café desde otros scripts
     public float CurrentMoney => currentMoney; // Propiedad pública para acceder al dinero actual desde otros scripts
     private void Awake()
@@ -30,6 +31,21 @@ public class MoneyManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        customerPaidHandler = OnCustomerPaid;
+        EventBus.Subscribe(customerPaidHandler);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(customerPaidHandler);
+    }
+
+    private void OnCustomerPaid(CustomerPaidEvent evt)
+    {
+        AddMoney(evt.Amount);
+    }
     public void AddMoney(float amount)
     {
         currentMoney += amount; // Sumamos el monto al dinero actual

@@ -109,13 +109,13 @@ public class ShopPanelUI : MonoBehaviour
             return;
         }
 
-        int coffeesSoldToday = DayCycleManager.Instance.CoffeesSoldToday;
+        int coffeesServedToday = DayCycleManager.Instance.CoffeesServedToday;
         float gramsPerCup = IngredientManager.Instance.CoffeGramsPerCup;
         float currentStock = IngredientManager.Instance.CurrentCoffeGrams;
         float currentMoney = MoneyManager.Instance.CurrentMoney;
         
         // Calcular café necesario para mañana
-        float gramsNeeded = coffeesSoldToday * gramsPerCup * safetyMargin;
+        float gramsNeeded = coffeesServedToday * gramsPerCup * safetyMargin;
         float gramsShortage = gramsNeeded - currentStock;
 
         // Lógica si ya tiene suficiente stock

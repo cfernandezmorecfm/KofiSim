@@ -12,7 +12,6 @@ public class CustomerFSM : MonoBehaviour
     private float currentPatience;
     private CustomerUI customerUI; // Referencia al componente de UI para actualizar la barra de paciencia
 
-    public static int ActiveCount { get; private set; } = 0; // Contador estático para llevar la cuenta de los clientes activos en la escena
 
     // Propiedades públicas para que los estados accedan a los datos
     public float MoveSpeed => moveSpeed;
@@ -22,15 +21,11 @@ public class CustomerFSM : MonoBehaviour
     public Seat TargetSeat => targetSeat;
     public Rigidbody2D Rb => rb;
 
-    // Agregamos dos métodos para manejar el contador de clientes activos
-    private void Awake()
-    {
-        ActiveCount++; // Incrementamos el contador cada vez que se crea un nuevo cliente
-    }
+  
 
     private void OnDestroy()
     {
-        ActiveCount--; // Decrementamos el contador cada vez que un cliente es destruido
+        EventBus.Publish(new CustomerLeftEvent());
     }
 
 
@@ -154,6 +149,7 @@ public class CustomerFSM : MonoBehaviour
     {
         if (currentState is WaitingForOrderState)
         {
+            EventBus.Publish(new CustomerServedEvent());
             ChangeState(new ConsumingState(this));
         }
     }

@@ -12,10 +12,27 @@ public class CustomerSpawner : MonoBehaviour
     private float spawnTimer = 0f;
     private float nextSpawnTime;
 
+    private int activeCustomers = 0;
+    private System.Action<CustomerLeftEvent> customerLeftHandler;
+
+    public int ActiveCustomers => activeCustomers;
+
     public void SetSpawningEnabled(bool isEnabled)
     {
         spawnEnabled = isEnabled;
     }
+
+    private void OnEnable()
+    {
+        customerLeftHandler = OnCustomerLeft;
+        EventBus.Subscribe(customerLeftHandler);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(customerLeftHandler);
+    }
+
     void Start()
     {
         //Asigna un tiempo de spawn aleatorio para el primer cliente
@@ -40,6 +57,14 @@ public class CustomerSpawner : MonoBehaviour
     private void SpawnCustomer()
     {
         Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
-        Debug.Log("Nuevo cliente ha llegado");
+        activeCustomers++;
+        EventBus.Publish(new CustomerSpawnedEvent());
+        Debug.Log($"Nuevo cliente ha llegado. Clientes activos: {activeCustomers}");
+    }
+
+    private void OnCustomerLeft(CustomerLeftEvent evt)
+    {
+        activeCustomers--;
+        Debug.Log($"Un cliente se ha ido. Clienes activos {activeCustomers}");
     }
 }
