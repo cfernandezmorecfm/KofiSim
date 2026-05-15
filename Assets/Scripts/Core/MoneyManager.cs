@@ -46,7 +46,7 @@ public class MoneyManager : MonoBehaviour
     {
         AddMoney(evt.Amount);
     }
-    public void AddMoney(float amount)
+    private void AddMoney(float amount)
     {
         currentMoney += amount; // Sumamos el monto al dinero actual
         Debug.Log($"Dinero agregado: {amount}. Dinero actual: {currentMoney}"); // Log para verificar el cambio de dinero

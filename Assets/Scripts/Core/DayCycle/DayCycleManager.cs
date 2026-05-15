@@ -32,8 +32,6 @@ public class DayCycleManager : MonoBehaviour
     public CustomerSpawner CustomerSpawner => customerSpawner; // Para poder acceder al spawner de clientes desde los estados del ciclo del día
     public BaristaWorker Barista => barista; // Para poder acceder al barista desde los estados del ciclo del día
 
-    public event Action<float> OnDayTimerChanged; // Evento para notificar a los suscriptores del cambio de tiempo del dia
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -85,7 +83,7 @@ public class DayCycleManager : MonoBehaviour
     {
         IncrementCoffeesServed();
     }
-    public void AddIncome(float amount)
+    private void AddIncome(float amount)
         {
             dayIncome += amount;
         }
@@ -101,13 +99,8 @@ public class DayCycleManager : MonoBehaviour
         currentDay++;
     }
 
-    public void NotifyTimerChanged(float timeRemaining)
-    {
-        OnDayTimerChanged?.Invoke(timeRemaining);
-    }
-
     // Método para incrementar la cantidad de cafés vendidos en el día actual, se llama desde el LeavingState cuando un cliente paga
-    public void IncrementCoffeesServed()
+    private void IncrementCoffeesServed()
     {
         coffeesServedToday++;
     }

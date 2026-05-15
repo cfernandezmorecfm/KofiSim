@@ -17,13 +17,11 @@ public class ServiceState : IDayCycleState
         manager.ResetDayIncome();
         manager.CustomerSpawner.SetSpawningEnabled(true);
         timer = manager.DayDurationInSeconds;
-        manager.NotifyTimerChanged(timer);
     }
 
     public void Execute()
     {
         timer -= Time.deltaTime;
-        manager.NotifyTimerChanged(timer);
 
         if (timer <= 0f)
         {
