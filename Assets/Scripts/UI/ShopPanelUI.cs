@@ -90,7 +90,7 @@ public class ShopPanelUI : MonoBehaviour
             Hide();
         }
     }
-    public void Show(int day)
+    private void Show(int day)
     {
         titleText.text = $"Tienda día {day}";
         UpdateDisplay();
@@ -98,7 +98,7 @@ public class ShopPanelUI : MonoBehaviour
         panelRoot.SetActive(true);
     }
 
-    public void Hide()
+    private void Hide()
     {
         panelRoot.SetActive(false);
     }

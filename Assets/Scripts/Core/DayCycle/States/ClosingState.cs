@@ -25,7 +25,6 @@ public class ClosingState : IDayCycleState
         EventBus.Subscribe(customerLeftHandler);
 
         Debug.Log($"Día {manager.CurrentDay}: El turno ha terminado");
-        manager.CustomerSpawner.SetSpawningEnabled(false);
     }
     public void Execute()
     {

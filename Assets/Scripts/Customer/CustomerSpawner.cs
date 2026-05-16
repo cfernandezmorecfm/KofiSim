@@ -20,7 +20,7 @@ public class CustomerSpawner : MonoBehaviour
 
     public int ActiveCustomers => activeCustomers;
 
-    public void SetSpawningEnabled(bool isEnabled)
+    private void SetSpawningEnabled(bool isEnabled)
     {
         spawnEnabled = isEnabled;
     }

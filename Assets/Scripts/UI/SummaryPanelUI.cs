@@ -64,7 +64,7 @@ public class SummaryPanelUI : MonoBehaviour
              Hide();
         }
     }
-    public void show(int day, float income, float salary)
+    private void show(int day, float income, float salary)
     {
         // Actualizar los textos con la información del día, ingresos, salarios y balance
         dayText.text = $"Sumario del día {day}";
@@ -77,13 +77,12 @@ public class SummaryPanelUI : MonoBehaviour
         panelRoot.SetActive(true);
     }
 
-    public void Hide()
+    private void Hide()
     {
         panelRoot.SetActive(false);
     }
     private void OnContinueClicked()
     {
         DayCycleManager.Instance.ChangeState(new ShoppingState(DayCycleManager.Instance));
-         Hide();
     }
 }
