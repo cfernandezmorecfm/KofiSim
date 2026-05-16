@@ -1,4 +1,6 @@
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 public class CustomerSpawner : MonoBehaviour
 {
@@ -13,7 +15,8 @@ public class CustomerSpawner : MonoBehaviour
     private float nextSpawnTime;
 
     private int activeCustomers = 0;
-    private System.Action<CustomerLeftEvent> customerLeftHandler;
+    private Action<CustomerLeftEvent> customerLeftHandler;
+    private Action<DayPhaseChangedEvent> dayPhaseChangedHandler;
 
     public int ActiveCustomers => activeCustomers;
 
@@ -26,11 +29,18 @@ public class CustomerSpawner : MonoBehaviour
     {
         customerLeftHandler = OnCustomerLeft;
         EventBus.Subscribe(customerLeftHandler);
+
+        dayPhaseChangedHandler = OnDayPhaseChanged;
+        EventBus.Subscribe(dayPhaseChangedHandler);
+
+        // PULL inicial para ponerse al día con la fase actual al activarse
+        ApplyPhase(DayCycleManager.Instance.CurrentPhase);
     }
 
     private void OnDisable()
     {
         EventBus.Unsubscribe(customerLeftHandler);
+        EventBus.Unsubscribe(dayPhaseChangedHandler);
     }
 
     void Start()
@@ -66,5 +76,19 @@ public class CustomerSpawner : MonoBehaviour
     {
         activeCustomers--;
         Debug.Log($"Un cliente se ha ido. Clienes activos {activeCustomers}");
+    }
+
+    private void OnDayPhaseChanged(DayPhaseChangedEvent evt)
+    {
+        ApplyPhase(evt.NewPhase);
+    }
+
+    private void ApplyPhase(DayPhase phase)
+    {
+        if (phase == DayPhase.Service)
+            SetSpawningEnabled(true);
+        else if (phase == DayPhase.Closing)
+            SetSpawningEnabled(false);
+        // Para Summary y Shopping no hace faltahacer nada, porque el spawner ya viene de Closing con disabled
     }
 }

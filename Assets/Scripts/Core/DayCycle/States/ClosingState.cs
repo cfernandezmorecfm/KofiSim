@@ -8,6 +8,8 @@ public class ClosingState : IDayCycleState
 
     private Action<CustomerSpawnedEvent> customerSpawnedHandler;
     private Action<CustomerLeftEvent> customerLeftHandler;
+
+    public DayPhase Phase => DayPhase.Closing; // Implementamos la propiedad Phase para identificar este estado como el de cierre
     public ClosingState(DayCycleManager manager)
     {
         this.manager = manager;

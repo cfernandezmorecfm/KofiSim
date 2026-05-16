@@ -23,11 +23,14 @@ public class DayCycleManager : MonoBehaviour
     private Action<CustomerPaidEvent> customerPaidHandler;
     private Action<CustomerServedEvent> customerServedHandler;
 
+    private DayPhase currentPhase; 
+
     //Conjuntos de expression-boided properties para exponer datos privados a otras clases sin permitir su modificación directa
     public int CoffeesServedToday => coffeesServedToday; // Para poder obtener la cantidad de cafés servidos desde la instancia
     public float DayDurationInSeconds => dayDurationInSeconds; // Para poder obtener la duración del día desde la instancia
     public float DayIncome => dayIncome;
     public int CurrentDay => currentDay;
+    public DayPhase CurrentPhase => currentPhase; // Esta propiedad la leerán por PULL inicial
 
     public CustomerSpawner CustomerSpawner => customerSpawner; // Para poder acceder al spawner de clientes desde los estados del ciclo del día
     public BaristaWorker Barista => barista; // Para poder acceder al barista desde los estados del ciclo del día
@@ -67,11 +70,11 @@ public class DayCycleManager : MonoBehaviour
 
     public void ChangeState(IDayCycleState newState)
     {
-        Debug.Log($"TRANSICIÓN: {currentState?.GetType().Name} → {newState.GetType().Name}");
         currentState?.Exit();
-        StopAllCoroutines(); // Detener cualquier coroutine en ejecución (como el timer del día) al cambiar de estado
         currentState = newState;
-        currentState?.Enter();
+        currentPhase = newState.Phase;
+        currentState.Enter();
+        EventBus.Publish(new DayPhaseChangedEvent(currentPhase));
     }
 
     private void OnCustomerPaid(CustomerPaidEvent evt)

@@ -5,6 +5,7 @@ public class ServiceState : IDayCycleState
     private DayCycleManager manager;
     private float timer;
 
+    public DayPhase Phase => DayPhase.Service; // Implementamos la propiedad Phase para identificar este estado como el de servicio
     public ServiceState(DayCycleManager manager)
     {
         this.manager = manager;

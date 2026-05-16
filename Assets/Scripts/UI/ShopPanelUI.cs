@@ -39,6 +39,7 @@ public class ShopPanelUI : MonoBehaviour
     private float pack1000Grams = 1000f;
     private float pack2000Grams = 2000f;
 
+    private System.Action<DayPhaseChangedEvent> dayPhaseChangedHandler;
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -59,6 +60,36 @@ public class ShopPanelUI : MonoBehaviour
         panelRoot.SetActive(false); // Oculta el panel al inicio
     }
 
+    private void OnEnable()
+    {
+            dayPhaseChangedHandler = OnDayPhaseChanged;
+            EventBus.Subscribe(dayPhaseChangedHandler);
+    
+            // PULL inicial para ponerse al día con la fase actual al activarse
+            ApplyPhase(DayCycleManager.Instance.CurrentPhase);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(dayPhaseChangedHandler);
+    }
+
+    private void OnDayPhaseChanged(DayPhaseChangedEvent evt)
+    {
+        ApplyPhase(evt.NewPhase);
+    }
+
+    private void ApplyPhase(DayPhase phase)
+    {
+        if (phase == DayPhase.Shopping)
+        {
+            Show(DayCycleManager.Instance.CurrentDay);
+        }
+        else
+        {
+            Hide();
+        }
+    }
     public void Show(int day)
     {
         titleText.text = $"Tienda día {day}";

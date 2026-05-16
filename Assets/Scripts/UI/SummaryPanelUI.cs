@@ -15,6 +15,8 @@ public class SummaryPanelUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI balanceText;
     [SerializeField] private Button continueButton;
 
+    private System.Action<DayPhaseChangedEvent> dayPhaseChangedHandler;
+
     private void Awake()
     {
         // Singleton pattern para asegurar que solo haya una instancia del panel de sumario
@@ -31,6 +33,37 @@ public class SummaryPanelUI : MonoBehaviour
         panelRoot.SetActive(false); // Ocultar el panel al inicio aunque ya se haya hecho desde el inspector, por seguridad
     }
 
+    private void OnEnable()
+    {
+        dayPhaseChangedHandler = OnDayPhaseChanged;
+        EventBus.Subscribe(dayPhaseChangedHandler);
+
+        // PULL inicial para ponerse al día con la fase actual al activarse
+        ApplyPhase(DayCycleManager.Instance.CurrentPhase);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(dayPhaseChangedHandler);
+    }
+    
+    private void OnDayPhaseChanged(DayPhaseChangedEvent evt)
+    {
+        ApplyPhase(evt.NewPhase);
+    }
+    private void ApplyPhase(DayPhase phase)
+    {
+        if (phase == DayPhase.Summary)
+        {
+            // PULL puntual con los datos económicos en el momento de mostrar
+            var manager = DayCycleManager.Instance;
+            show(manager.CurrentDay, manager.DayIncome, manager.Barista.Salary);
+        }
+        else
+        {
+             Hide();
+        }
+    }
     public void show(int day, float income, float salary)
     {
         // Actualizar los textos con la información del día, ingresos, salarios y balance

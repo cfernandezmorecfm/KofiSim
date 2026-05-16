@@ -2,6 +2,8 @@ using UnityEngine;
 public class SummaryState : IDayCycleState
 {
     private DayCycleManager manager;
+
+    public DayPhase Phase => DayPhase.Summary; // Implementamos la propiedad Phase para identificar este estado como el de resumen del dia
     public SummaryState(DayCycleManager manager)
     {
         this.manager = manager;
