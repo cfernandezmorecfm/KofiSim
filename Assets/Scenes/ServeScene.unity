@@ -4263,7 +4263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1c4e295bd002dd41b480aa7775afaf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayCycleManager
-  dayDurationInSeconds: 180
+  dayDurationInSeconds: 20
   customerSpawner: {fileID: 894205922}
   barista: {fileID: 1944605913}
 --- !u!1 &1737625596
