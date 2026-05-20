@@ -1,2 +1,24 @@
 fileFormatVersion: 2
 guid: 9022ecb397b4a0c43baafad3479b1dd6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - panelRoot: {instanceID: 0}
+  - titleText: {instanceID: 0}
+  - moneyText: {instanceID: 0}
+  - stockText: {instanceID: 0}
+  - recommendationText: {instanceID: 0}
+  - pack500Button: {instanceID: 0}
+  - pack1000Button: {instanceID: 0}
+  - pack2000Button: {instanceID: 0}
+  - StartDayButton: {instanceID: 0}
+  - pack500Text: {instanceID: 0}
+  - pack1000Text: {instanceID: 0}
+  - pack2000Text: {instanceID: 0}
+  - packCatalog: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

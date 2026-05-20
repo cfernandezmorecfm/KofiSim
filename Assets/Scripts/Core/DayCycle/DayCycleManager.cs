@@ -6,7 +6,7 @@ public class DayCycleManager : MonoBehaviour
     public static DayCycleManager Instance { get; private set; }
 
     [Header("Configuración del ciclo del día")]
-    [SerializeField] private float dayDurationInSeconds = 180f; // Duración de un día en segundos
+    [SerializeField] private DayConfig dayConfig; // Duración de un día en segundos
 
 
     [Header("Referencias")]
@@ -27,7 +27,7 @@ public class DayCycleManager : MonoBehaviour
 
     //Conjuntos de expression-boided properties para exponer datos privados a otras clases sin permitir su modificación directa
     public int CoffeesServedToday => coffeesServedToday; // Para poder obtener la cantidad de cafés servidos desde la instancia
-    public float DayDurationInSeconds => dayDurationInSeconds; // Para poder obtener la duración del día desde la instancia
+    public float DayDurationInSeconds => dayConfig.dayDurationInSeconds; // Para poder obtener la duración del día desde la instancia
     public float DayIncome => dayIncome;
     public int CurrentDay => currentDay;
     public DayPhase CurrentPhase => currentPhase; // Esta propiedad la leerán por PULL inicial

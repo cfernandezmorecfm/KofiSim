@@ -25,19 +25,11 @@ public class ShopPanelUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pack1000Text;
     [SerializeField] private TextMeshProUGUI pack2000Text;
 
-    [Header("Precios de los packs")]
-    [SerializeField] private float pack500Price = 20f;
-    [SerializeField] private float pack1000Price = 30f;
-    [SerializeField] private float pack2000Price = 50f;
-
     [Header("Recomendaciones")]
     [SerializeField] private int recommendationDays = 5;
     [SerializeField] private float safetyMargin = 1.2f; // Margen de seguridad para recomendar un pack más grande
 
-    // Variables para asignar cantidad de gramos por paquete
-    private float pack500Grams = 500f;
-    private float pack1000Grams = 1000f;
-    private float pack2000Grams = 2000f;
+    [SerializeField] private PackCatalog packCatalog; // Referencia al catálogo de packs para obtener los gramos y precios
 
     private System.Action<DayPhaseChangedEvent> dayPhaseChangedHandler;
     void Awake()
@@ -53,9 +45,9 @@ public class ShopPanelUI : MonoBehaviour
     private void Start()
     {
         // Configura los textos de los botones con los precios
-        pack500Button.onClick.AddListener(() => BuyPack(pack500Grams, pack500Price));
-        pack1000Button.onClick.AddListener(() => BuyPack(pack1000Grams, pack1000Price));
-        pack2000Button.onClick.AddListener(() => BuyPack(pack2000Grams, pack2000Price));
+        pack500Button.onClick.AddListener(() => BuyPack(packCatalog.packs[0].grams, packCatalog.packs[0].price));
+        pack1000Button.onClick.AddListener(() => BuyPack(packCatalog.packs[1].grams, packCatalog.packs[1].price));
+        pack2000Button.onClick.AddListener(() => BuyPack(packCatalog.packs[2].grams, packCatalog.packs[2].price));
         StartDayButton.onClick.AddListener(OnStartDayClicked); // Agrega el listener para el botón de iniciar día
         panelRoot.SetActive(false); // Oculta el panel al inicio
     }
@@ -117,14 +109,14 @@ public class ShopPanelUI : MonoBehaviour
             stockText.text = $"Stock: {stock:F0} g, llega para {stock / gramsPerCup:F2} cafés";
 
         // Actualizar textos de los botones con cafés dinámicos
-        pack500Text.text = $"Pack 500g — {pack500Price:F0}€ ({pack500Grams / gramsPerCup:F0} cafés)";
-        pack1000Text.text = $"Pack 1kg — {pack1000Price:F0}€ ({pack1000Grams / gramsPerCup:F0} cafés)";
-        pack2000Text.text = $"Pack 2kg — {pack2000Price:F0}€ ({pack2000Grams / gramsPerCup:F0} cafés)";
+        pack500Text.text = $"Pack 500g — {packCatalog.packs[0].price:F0}€ ({packCatalog.packs[0].grams / gramsPerCup:F0} cafés)";
+        pack1000Text.text = $"Pack 1kg — {packCatalog.packs[1].price:F0}€ ({packCatalog.packs[1].grams / gramsPerCup:F0} cafés)";
+        pack2000Text.text = $"Pack 2kg — {packCatalog.packs[2].price:F0}€ ({packCatalog.packs[2].grams / gramsPerCup:F0} cafés)";
 
         // Activar/desactivar botones según dinero disponible
-        pack500Button.interactable = money >= pack500Price;
-        pack1000Button.interactable = money >= pack1000Price;
-        pack2000Button.interactable = money >= pack2000Price;
+        pack500Button.interactable = money >= packCatalog.packs[0].price;
+        pack1000Button.interactable = money >= packCatalog.packs[1].price;
+        pack2000Button.interactable = money >= packCatalog.packs[2].price;
     }
     private void BuyPack(float packGrams, float packPrice)
     {
@@ -152,7 +144,7 @@ public class ShopPanelUI : MonoBehaviour
         // Lógica si ya tiene suficiente stock
         if (gramsShortage <= 0)
         {
-            if (currentMoney <= pack2000Price)
+            if (currentMoney <= packCatalog.packs[2].price)
                 recommendationText.text = "¡Tienes suficiente café para mañana! Mejor ahorra para comprar un pack más grande.";
             else
                 recommendationText.text = "¡Tienes suficiente café para mañana!";    
@@ -160,11 +152,11 @@ public class ShopPanelUI : MonoBehaviour
         }
 
         // Lógica por si no hay suficiente stock
-        if (currentMoney >= pack2000Price && gramsShortage > pack1000Grams)
+        if (currentMoney >= packCatalog.packs[2].price && gramsShortage > packCatalog.packs[1].grams)
             recommendationText.text = "Compra el pack de 2kg para asegurarte de tener suficiente café para mañana.";
-        else if (currentMoney >= pack1000Price && gramsShortage > pack500Grams)
+        else if (currentMoney >= packCatalog.packs[1].price && gramsShortage > packCatalog.packs[0].grams)
             recommendationText.text = "Compra el pack de 1kg para asegurarte de tener suficiente café para mañana.";
-        else if (currentMoney >= pack500Price)
+        else if (currentMoney >= packCatalog.packs[0].price)
             recommendationText.text = "Compra el pack de 500g para asegurarte de tener suficiente café para mañana.";
         else
             recommendationText.text = "No tienes suficiente dinero para comprar más café ¡intenta vender más cafés hoy!";

@@ -4,17 +4,15 @@ public class IngredientManager : MonoBehaviour
 {
     public static IngredientManager Instance { get; private set; }
 
-    [Header("Stock inicial")]
-    [SerializeField] private float startingCoffeGrams = 1000f; // Empezamos con 1 kg de café gratis
-
-    [Header("Consumo por café")]
-    [SerializeField] private float coffeGramsPerCup = 20f;
+    [Header("Configuración")]
+    [SerializeField] private EconomyConfig economyConfig;
+    [SerializeField] private CoffeeRecipe recipe;
 
     private float currentCoffeGrams;
 
-    public float StartingCoffeGrams => startingCoffeGrams; // Para poder obtener la cantidad de gramos de café con la que empezamos de la instancia
+    public float StartingCoffeGrams => economyConfig.StartingCoffeeGrams; // Para poder obtener la cantidad de gramos de café con la que empezamos de la instancia
     public float CurrentCoffeGrams => currentCoffeGrams; // Para poder obtener la cantidad de gramos de café que quedan de la instancia
-    public float CoffeGramsPerCup => coffeGramsPerCup; // Para poder obtener la cantidad de gramos de café que se utilizan para una taza de la instancia
+    public float CoffeGramsPerCup => recipe.gramsPerCup; // Para poder obtener la cantidad de gramos de café que se utilizan para una taza de la instancia
 
     private void Awake()
     {
@@ -24,7 +22,7 @@ public class IngredientManager : MonoBehaviour
             return;
         }
         Instance = this;
-        currentCoffeGrams = startingCoffeGrams; // Inicialización movida desde Start a Awake para asegurar que el stock de café se establezca correctamente al inicio del juego, incluso si el objeto se reinicia o se carga una nueva escena
+        currentCoffeGrams = economyConfig.StartingCoffeeGrams; // Inicialización movida desde Start a Awake para asegurar que el stock de café se establezca correctamente al inicio del juego, incluso si el objeto se reinicia o se carga una nueva escena
     }
 
     public bool HasEnoughCoffee(float grams)

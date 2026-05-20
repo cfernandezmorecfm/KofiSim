@@ -1470,8 +1470,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e29a5c5d687d98429007c17d2710bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IngredientManager
-  startingCoffeGrams: 1000
-  coffeGramsPerCup: 10
+  economyConfig: {fileID: 11400000, guid: 6831025e60d47804b80de0108720353d, type: 2}
+  recipe: {fileID: 11400000, guid: 5147ce4489757a142bc0717c048dc22f, type: 2}
 --- !u!4 &575544341
 Transform:
   m_ObjectHideFlags: 0
@@ -1516,8 +1516,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc40a6db04110d0448c6ed8279a5b895, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoneyManager
-  startingMoney: 0
-  coffeePrice: 2
+  economyConfig: {fileID: 11400000, guid: 6831025e60d47804b80de0108720353d, type: 2}
+  recipe: {fileID: 11400000, guid: 5147ce4489757a142bc0717c048dc22f, type: 2}
 --- !u!4 &576089316
 Transform:
   m_ObjectHideFlags: 0
@@ -4263,7 +4263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1c4e295bd002dd41b480aa7775afaf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayCycleManager
-  dayDurationInSeconds: 20
+  dayConfig: {fileID: 11400000, guid: b040b6639fcfeb04fad94cb924b844ee, type: 2}
   customerSpawner: {fileID: 894205922}
   barista: {fileID: 1944605913}
 --- !u!1 &1737625596
@@ -5620,10 +5620,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c07985083216c054f8a18a9c3434bb34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaristaWorker
-  preparationTime: 4
   orderQueue: {fileID: 1271731098}
   workStation: {fileID: 429952148}
-  salary: 20
+  stats: {fileID: 11400000, guid: c04aa21258b10b249b80e6e09792b3bd, type: 2}
+  recipe: {fileID: 11400000, guid: 5147ce4489757a142bc0717c048dc22f, type: 2}
 --- !u!212 &1944605914
 SpriteRenderer:
   serializedVersion: 2
@@ -6164,11 +6164,9 @@ MonoBehaviour:
   pack500Text: {fileID: 497022755}
   pack1000Text: {fileID: 913735279}
   pack2000Text: {fileID: 767049813}
-  pack500Price: 20
-  pack1000Price: 30
-  pack2000Price: 50
   recommendationDays: 5
   safetyMargin: 1.2
+  packCatalog: {fileID: 11400000, guid: e32c7ee2a0835f04f9f61849057b67d7, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

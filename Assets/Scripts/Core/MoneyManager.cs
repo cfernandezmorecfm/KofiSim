@@ -4,16 +4,14 @@ public class MoneyManager : MonoBehaviour
 {
     public static MoneyManager Instance { get; private set; }
 
-    [Header("Dinero inicial")]
-    [SerializeField] private float startingMoney = 0f; // Dinero inicial del jugador
-
-    [Header("Precio del café")]
-    [SerializeField] private float coffeePrice = 2f; // Dinero que cuesta cada café
+    [Header("Configuración")]
+    [SerializeField] private EconomyConfig economyConfig; // Acceso al SO de economía 
+    [SerializeField] private CoffeeRecipe recipe; // Acceso al SO de receta del café
 
     private float currentMoney; // Dinero actual del jugador
 
     private System.Action<CustomerPaidEvent> customerPaidHandler; 
-    public float CoffeePrice => coffeePrice; // Propiedad pública para acceder al precio del café desde otros scripts
+    public float CoffeePrice => recipe.coffeePrice; // Propiedad pública para acceder al precio del café desde otros scripts
     public float CurrentMoney => currentMoney; // Propiedad pública para acceder al dinero actual desde otros scripts
     private void Awake()
     {
@@ -27,7 +25,7 @@ public class MoneyManager : MonoBehaviour
         {
             Instance = this; // Asignamos esta instancia como la única
             DontDestroyOnLoad(gameObject); // Opcional: hacemos que este objeto persista entre escenas
-            currentMoney = startingMoney; // Inicializamos el dinero actual con el valor de startingMoney para el dia 1
+            currentMoney = economyConfig.StartingMoney; // Inicializamos el dinero actual con el valor de startingMoney para el dia 1
         }
     }
 
