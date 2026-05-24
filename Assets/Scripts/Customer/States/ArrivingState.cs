@@ -12,6 +12,11 @@ public class ArrivingState : ICustomerState
     public void Enter()
     {
         Debug.Log("Cliente: caminando hacia mi asiento");
+    
+        // Determinamos la dirección horizontal hacia el asiento y actualizamos el sprite
+        Vector2 seatPos = customer.TargetSeat.Position;
+        float dx = seatPos.x - customer.Rb.position.x;
+        customer.UpdateFacing(dx);
     }
 
     public void Execute() { }
@@ -37,5 +42,6 @@ public class ArrivingState : ICustomerState
     public void Exit()
     {
         Debug.Log("Cliente: he llegado a mi asiento");
+        customer.UpdateFacing(0f); // Velocidad 0 para mostrar el sprite de idle
     }
 }

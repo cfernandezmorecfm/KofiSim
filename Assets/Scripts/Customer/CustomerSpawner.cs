@@ -8,6 +8,7 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float minSpawnTime = 3f;
     [SerializeField] private float maxSpawnTime = 8f;
+    [SerializeField] private CustomerVisualProfile[] visualProfiles; // Array de perfiles visuales para asignar aleatoriamente a los clientes al spawnearlos
 
     private bool spawnEnabled = true; // Variable para controlar si el spawn está habilitado o no
 
@@ -66,7 +67,19 @@ public class CustomerSpawner : MonoBehaviour
 
     private void SpawnCustomer()
     {
-        Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject customerGO = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+
+        if (visualProfiles != null && visualProfiles.Length > 0)
+        {
+            CustomerVisualProfile randomProfile = visualProfiles[Random.Range(0, visualProfiles.Length)];
+            CustomerFSM fsm = customerGO.GetComponent<CustomerFSM>();
+            fsm.Initialize(randomProfile);
+        }
+        else
+        {
+            Debug.LogWarning("CustomerSpawner: el array visual está vacío");
+        }
+
         activeCustomers++;
         EventBus.Publish(new CustomerSpawnedEvent());
         Debug.Log($"Nuevo cliente ha llegado. Clientes activos: {activeCustomers}");

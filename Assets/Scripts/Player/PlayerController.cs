@@ -9,6 +9,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask interactableLayer;
     [SerializeField] private WorkStationCoffee coffeeStation;
 
+    // Añadimos los campos para los sprites del player
+    [SerializeField] private SpriteRenderer bodyRenderer;
+    [SerializeField] private Sprite idleSprite;
+    [SerializeField] private Sprite walkRightSprite;
+    [SerializeField] private Sprite walkLeftSprite;
+
     private Rigidbody2D rb;
     private Vector2 targetPosition;
     private bool isMoving = false;
@@ -28,6 +34,7 @@ public class PlayerController : MonoBehaviour
         playerUI = GetComponent<PlayerUI>();
         rb = GetComponent<Rigidbody2D>();
         targetPosition = rb.position;
+        UpdateSprite(); // Inicializamos el sprite del jugador
     }
 
     void Update()
@@ -61,6 +68,7 @@ public class PlayerController : MonoBehaviour
                     targetPosition = new Vector2(hit.collider.transform.position.x, rb.position.y);
                     targetSeat = hit.collider.GetComponent<Seat>();
                     isMoving = true;
+                    UpdateSprite();
                 }
                 else if (hit.collider.CompareTag("WorkStation"))
                 {
@@ -70,6 +78,7 @@ public class PlayerController : MonoBehaviour
                     targetPosition = new Vector2(hit.collider.transform.position.x, rb.position.y);
                     targetSeat = null;
                     isMoving = true;   
+                    UpdateSprite();
                 }
             }
         }
@@ -86,6 +95,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb.position = targetPosition;
                 isMoving = false;
+                UpdateSprite();
 
                 // Para que no se intente tomar pedido y entregar café al mismo tiempo, se prioriza la entrega de café. Si no se entrega café, entonces se intenta tomar el pedido.
                 if (!TryDeliverCoffee())
@@ -182,6 +192,26 @@ public class PlayerController : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private void UpdateSprite()
+    {
+        if (!isMoving)
+        {
+            bodyRenderer.sprite = idleSprite;
+        }
+        else
+        {
+            float dx = targetPosition.x - rb.position.x;
+            if (dx > 0)
+            {
+                bodyRenderer.sprite = walkRightSprite;
+            }
+            else if (dx < 0)
+            {
+                bodyRenderer.sprite = walkLeftSprite;
+            }
+        }
     }
 
 }

@@ -6,12 +6,15 @@ public class CustomerFSM : MonoBehaviour
     [SerializeField] private float patienceForTakeOrder = 20f; // Tiempo que el cliente está dispuesto a esperar para que le tomen su pedido antes de irse sin pagar
     [SerializeField] private float patienceForReceiveOrder = 30f; // Tiempo que el cliente está dispuesto a esperar para recibir su pedido antes de irse sin pagar
 
+    [SerializeField] private SpriteRenderer bodyRenderer;
+    // Referencia al SpriteRenderer para cambiar el sprite del cliente según su estado
+
     private ICustomerState currentState;
     private Seat targetSeat;
     private Rigidbody2D rb;
     private float currentPatience;
     private CustomerUI customerUI; // Referencia al componente de UI para actualizar la barra de paciencia
-
+    private CustomerVisualProfile visualProfile; // Referencia al perfil visual para cambiar los sprites según el estado
 
     // Propiedades públicas para que los estados accedan a los datos
     public float MoveSpeed => moveSpeed;
@@ -47,6 +50,28 @@ public class CustomerFSM : MonoBehaviour
         }
 
         customerUI = GetComponentInChildren<CustomerUI>(); // Encuentra el componente de UI en los hijos del cliente
+    }
+    
+    public void Initialize(CustomerVisualProfile profile)
+    {
+        visualProfile = profile;
+        bodyRenderer.sprite = profile.idleSprite;
+    }
+
+    public void UpdateFacing(float velocityX)
+    {
+        if (Mathf.Abs(velocityX) < 0.1f)
+        {
+            bodyRenderer.sprite = visualProfile.idleSprite;
+        }
+        else if (velocityX > 0f)
+        {
+            bodyRenderer.sprite = visualProfile.walkRightSprite;
+        }
+        else
+        {
+                       bodyRenderer.sprite = visualProfile.walkLeftSprite;
+        }
     }
 
     void Update()

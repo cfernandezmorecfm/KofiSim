@@ -29,6 +29,10 @@ public class LeavingState : ICustomerState
 
         // Salir por la izquierda, misma posición que el SpawnPoint
         exitPosition = new Vector2(-10f, customer.Rb.position.y);
+
+        // Actualizamos el sprite según la dirección hacia la salida
+        float dx = exitPosition.x - customer.Rb.position.x;
+        customer.UpdateFacing(dx);
     }
 
     public void Execute()
