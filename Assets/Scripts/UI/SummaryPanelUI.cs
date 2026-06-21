@@ -5,7 +5,7 @@ using TMPro;
 public class SummaryPanelUI : MonoBehaviour
 {
     // Singleton para acceder fácilmente al panel de sumario desde otras partes del código
-    public static SummaryPanelUI InstanceID { get; private set; }
+    public static SummaryPanelUI InstanceID { get; private set; } //* Código muerto, ya no sirve desde que se aplicó EDA, eliminar
 
     [Header("Elementos de la UI del panel de sumario")]
     [SerializeField] private GameObject panelRoot;

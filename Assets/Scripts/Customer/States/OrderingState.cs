@@ -14,7 +14,7 @@ public class OrderingState : ICustomerState
         Debug.Log("Cliente: me están tomando el pedido");
     }
 
-    public void fixedExecute()
+    public void fixedExecute() //* Estado en minúscula, corregir poniendo la f mayúscula para que sea FixedExecute o eliminar, ya que en la interficie viene con cuerpo por defecto y se puede no declarar
     {
         // No hay movimiento en este estado, así que no hacemos nada aquí
     }

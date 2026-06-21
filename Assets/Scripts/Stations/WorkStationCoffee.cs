@@ -12,7 +12,7 @@ public class WorkStationCoffee : MonoBehaviour
     private int coffeesOnCounter = 0;
 
     // Propiedad pública para acceder a la cantidad de cafés en el mostrador desde otros scripts, como el BaristaWorker para corregir el bug de cafés sobrantes
-    public int CoffeesOnCounter => coffeesOnCounter; 
+    public int CoffeesOnCounter => coffeesOnCounter; //* Vestigio de una programación anterior, quitar
 
     public Vector2 GetNextCoffeePosition()
     {

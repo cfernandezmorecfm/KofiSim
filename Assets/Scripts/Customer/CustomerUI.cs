@@ -25,7 +25,7 @@ public class CustomerUI : MonoBehaviour
 
         float ratio = Mathf.Clamp01(currentPatience / maxPatience); // Normalizamos el ratio entre 0 y 1
         Vector3 scale = patienceBarFill.localScale; // Ajustamos la escala en X según el ratio, manteniendo la altura constante
-        scale.x = 0.8f * ratio;
+        scale.x = 0.8f * ratio; //* Para mejora, coge el valor 0.8 del inspector, habría que añadir un lector del localScale en el awake para evitar posibles errores
         patienceBarFill.localScale = scale;
 
         // Cambiar color según el ratio: verde → amarillo → rojo

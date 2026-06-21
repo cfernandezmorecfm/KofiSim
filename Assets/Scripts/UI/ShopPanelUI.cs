@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro; 
 public class ShopPanelUI : MonoBehaviour
 {
-    public static ShopPanelUI Instance { get; private set; }
+    public static ShopPanelUI Instance { get; private set; } //* Código muerto, ya no sirve desde que se aplicó EDA, eliminar
 
     [Header("Panel")]
     [SerializeField] private GameObject panelRoot;
@@ -126,7 +126,7 @@ public class ShopPanelUI : MonoBehaviour
     }
     private void UpdateRecommendation(int day)
     {
-        if (day > 1)
+        if (day > recommendationDays)
         {
             recommendationText.text = "";
             return;

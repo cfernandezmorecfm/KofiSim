@@ -4,7 +4,7 @@ using UnityEditor;
 public class ClosingState : IDayCycleState
 {
     private DayCycleManager manager;
-    private int activeCustomers;
+    private int activeCustomers; //* vestigio de la implementación anterior, ahora se usa manager.CustomerSpawner.ActiveCustomers directamente
 
     private Action<CustomerSpawnedEvent> customerSpawnedHandler;
     private Action<CustomerLeftEvent> customerLeftHandler;
@@ -39,6 +39,7 @@ public class ClosingState : IDayCycleState
         Debug.Log($"Día {manager.CurrentDay}: Todos los clientes se han ido");
     }
 
+    //* Para corregir, trabajo duplicado, se puede leer directmente de manager.CustomerSpawner.ActiveCustomers
     private void OnCustomerSpawned(CustomerSpawnedEvent evt)
     {
         activeCustomers++;

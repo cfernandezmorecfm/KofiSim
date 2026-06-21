@@ -17,7 +17,7 @@ MonoBehaviour:
     grams: 500
     price: 20
   - name: Pack 1kg
-    grams: 100
+    grams: 1000
     price: 30
   - name: Pack 2kg
     grams: 2000

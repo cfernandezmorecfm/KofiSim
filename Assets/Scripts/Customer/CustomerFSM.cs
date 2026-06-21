@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CustomerFSM : MonoBehaviour
 {
+    //* Para propuesta de mejora, se me pasaron por alto estos valores para crear un SO, crear un CustomerStats
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float patienceForTakeOrder = 20f; // Tiempo que el cliente está dispuesto a esperar para que le tomen su pedido antes de irse sin pagar
     [SerializeField] private float patienceForReceiveOrder = 30f; // Tiempo que el cliente está dispuesto a esperar para recibir su pedido antes de irse sin pagar
@@ -70,7 +71,7 @@ public class CustomerFSM : MonoBehaviour
         }
         else
         {
-                       bodyRenderer.sprite = visualProfile.walkLeftSprite;
+            bodyRenderer.sprite = visualProfile.walkLeftSprite;
         }
     }
 
