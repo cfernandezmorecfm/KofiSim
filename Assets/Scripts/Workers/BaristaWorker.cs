@@ -8,7 +8,7 @@ public class BaristaWorker : MonoBehaviour
 
     [Header("Configuración")] 
     [SerializeField] private BaristaStats stats;
-    [SerializeField] private CoffeeRecipe recipe;
+    [SerializeField] private Recipe recipe;
 
     public float Salary => stats.salary; // Propiedad pública para acceder al salario desde otros scripts
 

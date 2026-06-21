@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e365d394609ecc54baca0eaea7273a5f, type: 3}
   m_Name: CoffeeRecipe
   m_EditorClassIdentifier: Assembly-CSharp::CoffeeRecipe
-  coffeePrice: 2
-  gramsPerCup: 10
+  recipeName: "Caf\xE9 solo"
+  price: 2
   preparationTime: 4
+  ingredients:
+  - ingredient: {fileID: 11400000, guid: 04912d26396e0c040a7fbda965dda20a, type: 2}
+    amount: 10
+  gramsPerCup: 10

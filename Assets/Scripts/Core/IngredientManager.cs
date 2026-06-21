@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class IngredientManager : MonoBehaviour
@@ -6,13 +7,13 @@ public class IngredientManager : MonoBehaviour
 
     [Header("Configuración")]
     [SerializeField] private EconomyConfig economyConfig;
-    [SerializeField] private CoffeeRecipe recipe;
 
-    private float currentCoffeGrams;
+    // TRANSITORIO: referencias de café para los envoltorios que mantienen viva la tienda.
+    [SerializeField] private IngredientSO coffeeIngredient;
+    [SerializeField] private Recipe recipe;
 
-    public float StartingCoffeGrams => economyConfig.StartingCoffeeGrams; // Para poder obtener la cantidad de gramos de café con la que empezamos de la instancia
-    public float CurrentCoffeGrams => currentCoffeGrams; // Para poder obtener la cantidad de gramos de café que quedan de la instancia
-    public float CoffeGramsPerCup => recipe.gramsPerCup; // Para poder obtener la cantidad de gramos de café que se utilizan para una taza de la instancia
+    // Stock de cuánto tenemos de cada ingrediente.
+    private readonly Dictionary<IngredientSO, float> stock = new();
 
     private void Awake()
     {
@@ -22,29 +23,74 @@ public class IngredientManager : MonoBehaviour
             return;
         }
         Instance = this;
-        currentCoffeGrams = economyConfig.StartingCoffeeGrams; // Inicialización movida desde Start a Awake para asegurar que el stock de café se establezca correctamente al inicio del juego, incluso si el objeto se reinicia o se carga una nueva escena
+
+        // Construimos el stock inicial a partir de la lista del EconomyConfig.
+        foreach (IngredientAmount item in economyConfig.startingStock)
+        {
+            if (item.ingredient == null) continue;
+            stock[item.ingredient] = item.amount;
+        }
     }
 
-    public bool HasEnoughCoffee(float grams)
+    // === API GENÉRICA ===
+
+    public float GetAmount(IngredientSO ingredient)
     {
-        // Comprobamos si queda suficiente café en stock para poder preparar una taza
-        return currentCoffeGrams >= grams;
+        return stock.TryGetValue(ingredient, out float amount) ? amount : 0f;
     }
 
-    public bool TryUseCoffee(float grams)
+    public bool HasEnough(IngredientSO ingredient, float amount)
     {
-        // El barista utiliza este método para intentar preparar una taza de café
-        // Lo hacemos en un método separado para poder manejar el caso en el que no haya suficiente café y evitar que el barista prepare una taza sin café
-        if (!HasEnoughCoffee(grams)) return false;
-        currentCoffeGrams -= grams;
-        EventBus.Publish(new IngredientStockChangedEvent(currentCoffeGrams)); // Publicamos el evento cada vez que se utiliza café para que el UI se actualice con el nuevo stock de café
+        return GetAmount(ingredient) >= amount;
+    }
+
+    public void Add(IngredientSO ingredient, float amount)
+    {
+        stock[ingredient] = GetAmount(ingredient) + amount;
+        PublishChange(ingredient);
+    }
+
+    public bool TryUse(IngredientSO ingredient, float amount)
+    {
+        if (!HasEnough(ingredient, amount)) return false;
+        stock[ingredient] = GetAmount(ingredient) - amount;
+        PublishChange(ingredient);
         return true;
     }
 
-    public void AddCoffee(float grams)
+    // Consumo ATÓMICO de una lista (para recetas): comprueba que hay de TODOS antes de gastar nada.
+    public bool HasEnoughForAll(List<IngredientAmount> items)
     {
-        // Se utilizará en el menú de compra para agregar más café a nuestro stock
-        currentCoffeGrams += grams;
-        EventBus.Publish(new IngredientStockChangedEvent(currentCoffeGrams)); // Publicamos el evento cada vez que se agrega café para que el UI se actualice con el nuevo stock de café
+        foreach (IngredientAmount item in items)
+        {
+            if (!HasEnough(item.ingredient, item.amount)) return false;
+        }
+        return true;
     }
+
+    public bool TryUseAll(List<IngredientAmount> items)
+    {
+        if (!HasEnoughForAll(items)) return false;
+        foreach (IngredientAmount item in items)
+        {
+            stock[item.ingredient] = GetAmount(item.ingredient) - item.amount;
+            PublishChange(item.ingredient);
+        }
+        return true;
+    }
+
+    // Para que la UI pueda listar todos los ingredientes y sus cantidades.
+    public IReadOnlyDictionary<IngredientSO, float> Stock => stock;
+
+    private void PublishChange(IngredientSO ingredient)
+    {
+        EventBus.Publish(new IngredientStockChangedEvent(ingredient, GetAmount(ingredient)));
+    }
+
+    // ENVOLTORIOS TRANSITORIOS DE CAFÉ (mantienen viva la tienda hasta generalizarla) 
+
+    public float CurrentCoffeGrams => GetAmount(coffeeIngredient);
+    public float CoffeGramsPerCup => recipe.gramsPerCup;
+    public bool TryUseCoffee(float grams) => TryUse(coffeeIngredient, grams);
+    public void AddCoffee(float grams) => Add(coffeeIngredient, grams);
 }

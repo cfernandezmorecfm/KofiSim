@@ -1,9 +1,11 @@
 public readonly struct IngredientStockChangedEvent
 {
-    public float NewGrams { get; }
+    public IngredientSO Ingredient { get; }
+    public float NewAmount { get; }
 
-    public IngredientStockChangedEvent(float newGrams)
+    public IngredientStockChangedEvent(IngredientSO ingredient, float newAmount)
     {
-        NewGrams = newGrams;
+        Ingredient = ingredient;
+        NewAmount = newAmount;
     }
 }

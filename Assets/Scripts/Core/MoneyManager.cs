@@ -6,12 +6,12 @@ public class MoneyManager : MonoBehaviour
 
     [Header("Configuración")]
     [SerializeField] private EconomyConfig economyConfig; // Acceso al SO de economía 
-    [SerializeField] private CoffeeRecipe recipe; // Acceso al SO de receta del café
+    [SerializeField] private Recipe recipe; // Acceso al SO de receta del café
 
     private float currentMoney; // Dinero actual del jugador
 
     private System.Action<CustomerPaidEvent> customerPaidHandler; 
-    public float CoffeePrice => recipe.coffeePrice; // Propiedad pública para acceder al precio del café desde otros scripts
+    public float CoffeePrice => recipe.price; // Propiedad pública para acceder al precio del café desde otros scripts
     public float CurrentMoney => currentMoney; // Propiedad pública para acceder al dinero actual desde otros scripts
     private void Awake()
     {

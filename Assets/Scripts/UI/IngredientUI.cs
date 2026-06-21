@@ -1,30 +1,71 @@
+using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+
 public class IngredientUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI currentCoffeeText;
+    [Header("Desplegable")]
+    [SerializeField] private GameObject contentPanel;    // el panel que se muestra/oculta
+    [SerializeField] private Transform rowContainer;     // dónde se instancian las filas
+    [SerializeField] private IngredientRowUI rowPrefab;  // prefab de una fila
+
+    private readonly Dictionary<IngredientSO, IngredientRowUI> rows = new();
+    private bool isOpen = false;
 
     private System.Action<IngredientStockChangedEvent> stockChangedHandler;
+
     private void OnEnable()
     {
-        stockChangedHandler = OnStockChanged; // Guardamos la referencia al handler para garantizar que Subscribe y Unsubscribe utilizan la misma
-        EventBus.Subscribe(stockChangedHandler); // Suscribirse al evento de cambio de stock de café
+        stockChangedHandler = OnStockChanged;
+        EventBus.Subscribe(stockChangedHandler);
 
-        // Actualizar la UI con el stock inicial de café
-        UpdateCoffeeText(IngredientManager.Instance.CurrentCoffeGrams);
+        BuildRows();      // una fila por ingrediente del stock actual
+        SetOpen(false);   // empieza colapsado
     }
 
     private void OnDisable()
     {
-       EventBus.Unsubscribe(stockChangedHandler); // Desuscribirse del evento para evitar fugas de memoria
+        EventBus.Unsubscribe(stockChangedHandler);
+    }
+
+    // Crea (o recrea) las filas a partir del stock actual.
+    private void BuildRows()
+    {
+        foreach (IngredientRowUI row in rows.Values)
+        {
+            if (row != null) Destroy(row.gameObject);
+        }
+        rows.Clear();
+
+        foreach (KeyValuePair<IngredientSO, float> entry in IngredientManager.Instance.Stock)
+        {
+            IngredientRowUI row = Instantiate(rowPrefab, rowContainer);
+            row.Set(entry.Key, entry.Value);
+            rows[entry.Key] = row;
+        }
     }
 
     private void OnStockChanged(IngredientStockChangedEvent evt)
     {
-        UpdateCoffeeText(evt.NewGrams); // Actualizar la UI con el nuevo stock de café cada vez que se publique el evento
+        // Si ya hay fila para ese ingrediente, la actualizamos; si no, reconstruimos.
+        if (rows.TryGetValue(evt.Ingredient, out IngredientRowUI row) && row != null)
+        {
+            row.Set(evt.Ingredient, evt.NewAmount);
+        }
+        else
+        {
+            BuildRows();
+        }
     }
-    private void UpdateCoffeeText(float amount)
+
+    // Lo llama el botón "Ingredientes" en su OnClick.
+    public void Toggle()
     {
-        currentCoffeeText.text = $"Café Restante: {amount}g";
+        SetOpen(!isOpen);
+    }
+
+    private void SetOpen(bool open)
+    {
+        isOpen = open;
+        if (contentPanel != null) contentPanel.SetActive(open);
     }
 }

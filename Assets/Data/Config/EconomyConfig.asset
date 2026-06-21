@@ -13,4 +13,9 @@ MonoBehaviour:
   m_Name: EconomyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EconomyConfig
   StartingMoney: 0
+  startingStock:
+  - ingredient: {fileID: 11400000, guid: 04912d26396e0c040a7fbda965dda20a, type: 2}
+    amount: 500
+  - ingredient: {fileID: 11400000, guid: c0a436b9be0a18c4e970dcf9c8c2b7e7, type: 2}
+    amount: 1000
   StartingCoffeeGrams: 500
